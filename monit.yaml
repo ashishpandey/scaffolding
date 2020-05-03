@@ -1,0 +1,13 @@
+---
+- hosts: localhost
+  connection: local
+  vars:
+    prefix: /home/pi
+  tasks:
+  - name: install monit
+    apt:
+      name: 
+        - monit
+      state: present
+    become: yes
+
