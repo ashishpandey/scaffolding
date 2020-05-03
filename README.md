@@ -1,7 +1,6 @@
-# radiopi
-RadioPi setup
+# scaffolding
+Ansible playbooks for server rebuilds
 
-### Prerequisite
-Start [here](https://markinbristol.wordpress.com/2015/12/01/controlling-lightwaverf-panels-with-a-raspbery-pi/)
+Mostly dealing with a bunch of raspberry Pis and other microservers in my home network
 
 
