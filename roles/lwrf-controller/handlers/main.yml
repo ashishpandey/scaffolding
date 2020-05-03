@@ -1,0 +1,5 @@
+---
+- name: restart lwrfctl services
+  systemd: name=lwrfctl{{ item }} state=restarted
+  with_items: "{{ lwrf_dimmers }}"
+  become: yes

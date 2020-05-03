@@ -17,3 +17,21 @@
         target: install
       become: yes
   when: pigpiod_version.stdout != pigpio_tag
+
+- name: install pigpiod systemd service
+  copy: 
+    src: systemd/pigpiod.service
+    dest: /etc/systemd/system/pigpiod.service
+    owner: root 
+    group: root 
+    mode: 0755
+  become: yes
+  notify: restart pigpiod service
+
+- name: enable pigpiod service
+  systemd: name=pigpiod enabled=yes daemon_reload=yes
+  become: yes
+
+- name: start pigpiod
+  systemd: name=pigpiod state=started
+  become: yes

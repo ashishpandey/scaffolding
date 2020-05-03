@@ -1,0 +1,18 @@
+---
+- name: install lwrfctl{{ lwrf_dimmer_id }} systemd service
+  template: 
+    src: systemd/lwrfctl.service
+    dest: /etc/systemd/system/lwrfctl{{ lwrf_dimmer_id }}.service
+    owner: root
+    group: root 
+    mode: '0755'
+  become: yes
+  notify: restart lwrfctl services
+
+- name: enable lwrfctl{{ lwrf_dimmer_id }} service
+  systemd: name=lwrfctl{{ lwrf_dimmer_id }} enabled=yes daemon_reload=yes
+  become: yes
+
+- name: start lwrfctl{{ lwrf_dimmer_id }}
+  systemd: name=lwrfctl{{ lwrf_dimmer_id }} state=started
+  become: yes

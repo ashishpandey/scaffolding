@@ -1,0 +1,4 @@
+---
+- name: restart pigpiod service
+  systemd: name=pigpiod state=restarted
+  become: yes

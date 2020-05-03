@@ -10,3 +10,8 @@
     requirements: "{{ prefix }}/src/pi-lwrf-ctrl-hub-master/requirements"
     umask: "0022"
   become: yes
+
+- include_tasks: lwrfctl.yml
+  loop: "{{ lwrf_dimmers|flatten(levels=1) }}"
+  loop_control:
+    loop_var: lwrf_dimmer_id
