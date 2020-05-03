@@ -1,5 +1,3 @@
 ---
 prefix: /home/pi
 pigpio_tag: "76"
-lwrf_gpio_pin: 18
-lwrf_dimmer_id: 1

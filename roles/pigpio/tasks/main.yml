@@ -1,0 +1,19 @@
+---
+- name: check pigpoid version
+  shell: pigpiod -V
+  register: pigpiod_version
+  ignore_errors: True
+
+- name: Install pigpio if missing
+  block:
+    - name: get pigpio source
+      unarchive:
+        src: https://github.com/joan2937/pigpio/archive/v{{ pigpio_tag }}.zip
+        dest: "{{ prefix }}/src"
+        remote_src: yes
+    - name: install pigpio
+      make:
+        chdir: "{{ prefix }}/src/pigpio-{{ pigpio_tag }}"    
+        target: install
+      become: yes
+  when: pigpiod_version.stdout != pigpio_tag
