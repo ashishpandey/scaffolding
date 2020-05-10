@@ -4,7 +4,7 @@ After=pigpiod.service
 
 [Service]
 PIDFile=/var/run/lwrfctld{{ lwrf_dimmer_id }}.pid
-ExecStart=python {{ prefix }}/src/pi-lwrf-ctrl-hub-master/run.py --id {{ lwrf_dimmer_id }} --gpio-pin {{ lwrf_gpio_pin }} --port 807{{ lwrf_dimmer_id }}
+ExecStart=python {{ prefix }}/src/pi-lwrf-ctrl-hub-master/run.py --id {{ lwrf_dimmer_id }} --gpio-pin {{ lwrf_gpio_pin }} --port 807{{ lwrf_dimmer_id }} --data-file /var/tmp/lwrfctl-data-{{ lwrf_dimmer_id }}
 ExecStop=/bin/kill -s QUIT $MAINPID
 
 [Install]

@@ -1,0 +1,37 @@
+---
+- name: get lwrf-controller source
+  unarchive:
+    src: https://github.com/ashishpandey/pi-lwrf-ctrl-hub/archive/multi-dimmer.zip
+    dest: "{{ prefix }}/src"
+    remote_src: yes
+  notify: restart lwrfhub
+
+- name: install lwrf-controller dependencies
+  pip:
+    requirements: "{{ prefix }}/src/pi-lwrf-ctrl-hub-multi-dimmer/requirements"
+    umask: "0022"
+  become: yes
+  notify: restart lwrfhub
+
+- name: install lwrfhub systemd service
+  template: 
+    src: systemd/lwrfhub.service
+    dest: /etc/systemd/system/lwrfhub.service
+    owner: root
+    group: root 
+    mode: '0755'
+  become: yes
+  notify: restart lwrfhub
+
+- name: enable lwrfhub service
+  systemd: 
+    name: lwrfhub 
+    enabled: yes
+    daemon_reload: yes
+  become: yes
+
+- name: start lwrfhub
+  systemd: 
+    name: lwrfhub 
+    state: started
+  become: yes

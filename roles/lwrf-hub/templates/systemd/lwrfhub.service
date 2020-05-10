@@ -1,0 +1,11 @@
+[Unit]
+Description=lwrfhub daemon
+After=pigpiod.service
+
+[Service]
+PIDFile=/var/run/lwrfctld{{ lwrf_dimmer_id }}.pid
+ExecStart=python {{ prefix }}/src/pi-lwrf-ctrl-hub-multi-dimmer/run.py --id 1 --gpio-pin {{ lwrf_gpio_pin }} --port 8070 --data-file /var/tmp/lwrfhub-data
+ExecStop=/bin/kill -s QUIT $MAINPID
+
+[Install]
+WantedBy=multi-user.target

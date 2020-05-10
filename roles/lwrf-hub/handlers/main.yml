@@ -1,0 +1,4 @@
+---
+- name: restart lwrfhub
+  systemd: name=lwrfhub state=restarted
+  become: yes

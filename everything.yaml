@@ -5,4 +5,4 @@
     - ansible-common
     - pigpio
     - lwrf-controller
-
+    - lwrf-hub
