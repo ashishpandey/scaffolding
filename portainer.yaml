@@ -1,0 +1,18 @@
+---
+- hosts: badagodaam
+  gather_facts: False
+  tasks:
+  - name: Container present
+    docker_container:
+      name: portainer
+      state: present
+      image: portainer/portainer:latest
+      restart_policy: always
+      detach: yes
+      ports:
+       - "8000:8000"
+       - "9000:9000"
+      volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
+       - /volume1/docker/portainer:/data
+      

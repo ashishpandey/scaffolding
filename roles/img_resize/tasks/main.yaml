@@ -1,0 +1,14 @@
+---
+- name: ensure scaffold
+  file:
+    path: /volume1/share/scaffold/bin
+    state: directory
+  loop:
+    - /volume1/share/scaffold/bin
+    - /volume1/share/scaffold/log
+
+- name: copy batch script
+  template:
+    src: batch_image_resize.sh
+    dest: /volume1/share/scaffold/bin/batch_image_resize.sh
+    mode: 0755

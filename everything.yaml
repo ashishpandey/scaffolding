@@ -2,7 +2,23 @@
 - hosts: radiopi
   gather_facts: False
   roles:
-    - ansible-common
-    - pigpio
-    - lwrf-controller
-    - lwrf-hub
+    - role: ansible-common
+      tags: common
+    - role: pigpio
+      tags: pigpio
+    - role: lwrf-controller
+      tags: lwrf
+    - role: lwrf-hub
+      tags: lwrf
+
+- hosts: influxdb
+  gather_facts: False
+  roles:
+    - role: influxdb 
+      tags: influxdb
+
+- hosts: badagodaam
+  gather_facts: False
+  roles:
+    - role: img_resize
+      tags: img_resize

@@ -1,0 +1,6 @@
+---
+- name: Create hassio database
+  influxdb_database:
+    hostname: influxdb.app.apandey.com
+    database_name: hassio
+
