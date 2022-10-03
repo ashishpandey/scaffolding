@@ -8,18 +8,26 @@ img_size="3840x2160"
 
 imbin="/usr/local/imagemagick/bin/"
 
-function img_resize() {
-  local img=$1
-  $imbin/convert "$src/$img" -resize ${img_size}^\> "$dst/$img" \
-		&& touch --no-create -m --reference=$src/$img --date="+1 sec" $dst/$img
+function log() {
+	echo "$(date +"%Y-%d-%m %T") - $1"
 }
 
-rsync --dry-run --recursive --itemize-changes --update --delete --exclude '@eaDir' $src/ $dst/ | while read -r line ; do
+function img_resize() {
+  local img=$1
+  if [[ "$img" == *.jpg ]]; then
+  	$imbin/convert "$src/$img" -resize ${img_size}^\> "$dst/$img" \
+		&& touch --no-create -m --reference=$src/$img --date="+1 sec" $dst/$img
+  fi
+}
+
+rsync --dry-run --recursive --itemize-changes --update --delete --delete-excluded \
+	--exclude '@eaDir' --exclude 'Thumbs.db' $src/ $dst/ | while read -r line ; do
     echo "$line"
     read -r op file <<< "$line"
 
     if [ "x$op" == "x*deleting" ]; then
-      rm -f $dst/$file
+	  log "removing $dst/$file"
+      rm -rf $dst/$file
 	else
 	  op1=$(echo $op | cut -b 1-2)
 	  tsChanged=$(echo $op | cut -b 5)
@@ -28,10 +36,10 @@ rsync --dry-run --recursive --itemize-changes --update --delete --exclude '@eaDi
 		mkdir -p $dst/$file
 	  elif [ "x$op1" == "x>f" ]; then
 		if [ "x$tsChanged" == "xT"  ]; then
-		  echo "update $dst/$file"
+		  log "update $dst/$file"
 		  img_resize "$file"
 		elif [ "x$tsChanged" == "x+" ]; then
-		  echo "add $dst/$file"
+		  log "add $dst/$file"
 		  img_resize "$file"
 		fi
 	  fi
