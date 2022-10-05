@@ -12,3 +12,9 @@
     src: batch_image_resize.sh
     dest: /volume1/share/scaffold/bin/batch_image_resize.sh
     mode: 0755
+
+- name: copy backup script
+  template:
+    src: backup_volume2.sh
+    dest: /volume1/share/scaffold/bin/backup_volume2.sh
+    mode: 0755
