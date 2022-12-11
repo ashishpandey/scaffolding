@@ -1,0 +1,19 @@
+---
+# variables
+# - file: file
+- name: ensure user script dir
+  file:
+    path: /boot/config/{{ file | dirname }}
+    state: directory
+    mode: '0700'
+    owner: root
+    group: root
+
+- name: copy user script
+  copy:
+    src: "{{ file }}"
+    dest: /boot/config/{{file}}
+    mode: '0600'
+    owner: root
+    group: root
+    

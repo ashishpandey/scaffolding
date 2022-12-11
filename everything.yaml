@@ -22,3 +22,9 @@
   roles:
     - role: img_resize
       tags: img_resize
+
+- hosts: godaam
+  gather_facts: False
+  roles:
+    - role: godaam
+      tags: godaam

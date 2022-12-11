@@ -1,0 +1,44 @@
+---
+- name: ensure scripts
+  file:
+    path: /mnt/user/scripts
+    state: directory
+    mode: '0777'
+    owner: nobody
+    group: users
+
+- name: copy mirror script
+  copy:
+    src: scripts/mirror.sh
+    dest: /mnt/user/scripts/mirror.sh
+    mode: '0555'
+    owner: nobody
+    group: users
+
+# - name: ensure user script dir
+#   file:
+#     path: /boot/config/plugins/user.scripts/scripts/sync-media
+#     state: directory
+#     mode: '0700'
+#     owner: root
+#     group: root
+
+# - name: copy user script
+#   copy:
+#     src: user_script_godaam_media_sync.sh
+#     dest: /boot/config/plugins/user.scripts/scripts/sync-media/script
+#     mode: '0600'
+#     owner: root
+#     group: root
+
+- include_tasks: plugin_file.yaml
+  vars: 
+    file: plugins/dynamix.system.temp/sensors.conf
+
+- include_tasks: plugin_file.yaml
+  vars: 
+    file: plugins/theme.engine/custom.css
+
+- include_tasks: plugin_file.yaml
+  vars: 
+    file: plugins/user.scripts/scripts/sync-media/script
