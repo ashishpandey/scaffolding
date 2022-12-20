@@ -1,4 +1,4 @@
----
+---  
 - name: ensure scripts
   file:
     path: /mnt/user/scripts
@@ -42,3 +42,8 @@
 - include_tasks: plugin_file.yaml
   vars: 
     file: plugins/user.scripts/scripts/sync-media/script
+
+- include_tasks: template_dir.yaml
+  vars:
+    template_src: appdata/homepage
+    template_dest: /mnt/user/appdata

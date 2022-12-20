@@ -1,0 +1,16 @@
+---
+# For configuration options and examples, please see:
+# https://github.com/benphelps/homepage/wiki/Information-Widgets
+
+- resources:
+    cpu: true
+    memory: true
+    disk: /
+
+- resources:
+    disk: /mnt/user/media
+
+- search:
+    provider: duckduckgo
+    target: _blank
+
