@@ -31,7 +31,7 @@ do
     -s | --src )
         shift
         if [ -d "$1" ]; then
-          src="${1%/}"  # source without trailing slash
+          src="${1}"
         else
           echo "$0: $1 is not a valid directory" >&2
           exit
@@ -98,7 +98,15 @@ rsync --dry-run --recursive --itemize-changes --delete --delete-excluded --iconv
     else
       op1=$(echo $op | cut -b 1-2)
       sizeTsState=$(echo $op | cut -b 4-5)
-      src_file="$(dirname $src)/$file"
+      case "$src" in
+      */)
+          src_file="${src}${file}"  # src end in slash, $file starts under it
+          ;;
+      *)
+          src_file="$(dirname $src)/$file"  # $file contains the src itself as root of path 
+          ;;
+      esac
+      
 
       if [ "x$op1" == "xcd" ]; then
 	      log "not eagerly creating $dest/$file"

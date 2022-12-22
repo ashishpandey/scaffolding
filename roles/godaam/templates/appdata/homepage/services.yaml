@@ -45,6 +45,34 @@
           url: http://192.168.1.215:9696
           key: "{{ prowlarr_api_key }}"
 
+  - Bazarr:
+      icon: bazarr.png
+      href: http://192.168.1.215:6767
+      container: bazarr
+      widget:
+        type: bazarr
+        url: http://192.168.1.215:6767
+        key: "{{ bazarr_api_key }}"         
+
+- Data:
+  - paperless:
+      icon: paperless-ng.png
+      href: http://192.168.1.215:8000
+      widget:
+        type: paperlessngx
+        url: http://192.168.1.215:8000
+        username: viewer
+        password: "{{ paperless_password }}"
+
+- Network:
+  - PiHole:
+      icon: pihole.png
+      href: https://pihole.app.apandey.com
+      widget:
+        type: pihole
+        fields: ["queries", "blocked", "gravity"]
+        url: https://pihole.app.apandey.com
+
   - Transmission:
       icon: transmission.png
       href: http://192.168.1.215:9091
@@ -54,17 +82,7 @@
           type: transmission
           fields: ["leech", "seed", "download", "upload"]
           url: http://192.168.1.215:9091
-
-- Network:
-#   - PiHole:
-#       icon: pihole.png
-#       href: https://pihole.app.apandey.com
-#       server: my-docker
-#       container: pihole
-#       widget:
-#         type: pihole
-#         fields: ["queries", "blocked", "gravity"]
-#         url: https://pihole.app.apandey.com
+        
   - Unifi:
       icon: unifi.png
       href: https://unifi.app.apandey.com

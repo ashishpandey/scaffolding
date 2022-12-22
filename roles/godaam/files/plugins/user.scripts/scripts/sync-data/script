@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+
+declare -A share_dirs=( ["GigaMac"]="gigamac" ["NAS"]="data" ["Media"]="photo" ["Video"]="video" )
+# declare -A share_dirs=( ["Video"]="video" )
+
+SRC_ROOT="/mnt/remotes/BADAGODAAM_share"
+DST_ROOT="/mnt/user"
+# run_mode="--dry-run"
+run_mode="--mirror"
+
+for src_dir in "${!share_dirs[@]}"
+do
+  src="${SRC_ROOT}/${src_dir}/"
+  dst="${DST_ROOT}/${share_dirs[$src_dir]}"
+  if [ ! -d $src ]; then
+    echo "WARNING: missing source dir $src"
+  elif [ ! -d $dst ]; then
+    echo "WARNING: missing dest dir $dst"
+  else
+    echo "synchronizing $src -> $dst"
+    /mnt/user/scripts/mirror.sh $run_mode --src ${src} --dest ${dst}
+    echo "==================================="
+  fi
+done
+
+# for dir_name in $root_dirs
+# do
+#   echo "synchronizing $dir_name"
+#   /mnt/user/scripts/mirror.sh $run_mode --src ${SRC_ROOT}/${dir_name} --dest ${DST_ROOT}
+#   echo "==================================="
+# done
+

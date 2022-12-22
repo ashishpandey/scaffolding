@@ -43,6 +43,10 @@
   vars: 
     file: plugins/user.scripts/scripts/sync-media/script
 
+- include_tasks: plugin_file.yaml
+  vars: 
+    file: plugins/user.scripts/scripts/sync-data/script
+
 - include_tasks: template_dir.yaml
   vars:
     template_src: appdata/homepage
