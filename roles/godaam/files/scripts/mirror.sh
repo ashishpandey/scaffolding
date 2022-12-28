@@ -68,7 +68,26 @@ function ensure_vars() {
 ensure_vars "run_type" "src" "dest"
 
 function log() {
-    echo "$(date +'%Y-%m-%d %T'): $1"
+  echo "$(date +'%Y-%m-%d %T'): $1"
+}
+
+function debug_log() {
+  if [ "x$debug" == "xtrue" ]; then
+    log "$1"
+  fi
+}
+
+progress_inc=500
+progress_idx=0
+function progress() {
+  ((progress_idx+=1))
+  if [ "x$debug" == "xtrue" ]; then
+    log "$1"
+  else
+    if ! ((progress_idx % progress_inc)); then
+      log "done $progress_idx"
+    fi
+  fi
 }
 
 function exec_cmd() {
@@ -84,13 +103,15 @@ function exec_cmd() {
 
 log "run mode: $run_mode"
 log "sync $src => $dest"
+log "using extra excludes => $EXTRA_EXCLUDES"
 log "-----------------------------------------------"
 
 rsync --dry-run --recursive --itemize-changes --delete --delete-excluded --iconv=utf-8 \
-	--exclude '@eaDir' --exclude 'Thumbs.db' "$src" "$dest" | while read -r line ; do
-    echo "$line"
+	--exclude '@eaDir' --exclude 'Thumbs.db' --exclude '*.socket' --exclude 'socket' $EXTRA_EXCLUDES \
+  "$src" "$dest" | while read -r line ; do
+    progress "$line"
     read -r op file <<< "$line"
-    log "from $file"
+    debug_log "from $file"
 
     if [ "x$op" == "x*deleting" ]; then
       log "removing $dest/$file"
@@ -106,10 +127,9 @@ rsync --dry-run --recursive --itemize-changes --delete --delete-excluded --iconv
           src_file="$(dirname $src)/$file"  # $file contains the src itself as root of path 
           ;;
       esac
-      
 
       if [ "x$op1" == "xcd" ]; then
-	      log "not eagerly creating $dest/$file"
+	      debug_log "not eagerly creating $dest/$file"
       elif [ "x$op1" == "x>f" ]; then
         dest_file="$dest/$file"
         dest_dir=$(dirname "${dest_file}")

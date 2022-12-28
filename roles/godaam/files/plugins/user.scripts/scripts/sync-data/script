@@ -2,8 +2,10 @@
 
 set -e
 
+export EXTRA_EXCLUDES="--exclude 'DropBox' --exclude 'RetroPie' --exclude '*.app'"
+
 declare -A share_dirs=( ["GigaMac"]="gigamac" ["NAS"]="data" ["Media"]="photo" ["Video"]="video" )
-# declare -A share_dirs=( ["Video"]="video" )
+# declare -A share_dirs=( ["NAS"]="data" )
 
 SRC_ROOT="/mnt/remotes/BADAGODAAM_share"
 DST_ROOT="/mnt/user"
@@ -24,11 +26,3 @@ do
     echo "==================================="
   fi
 done
-
-# for dir_name in $root_dirs
-# do
-#   echo "synchronizing $dir_name"
-#   /mnt/user/scripts/mirror.sh $run_mode --src ${SRC_ROOT}/${dir_name} --dest ${DST_ROOT}
-#   echo "==================================="
-# done
-

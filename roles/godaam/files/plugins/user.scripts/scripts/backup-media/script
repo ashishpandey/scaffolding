@@ -1,0 +1,8 @@
+#!/bin/bash
+#description=maintain a backup of media to a spare drive
+#arrayStarted=true
+#name=media backup
+#clearLog=true
+#noParity=true
+
+/mnt/user/scripts/sync.sh /mnt/user/media/ /mnt/disks/media_backup/ "media backup"

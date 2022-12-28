@@ -15,21 +15,13 @@
     owner: nobody
     group: users
 
-# - name: ensure user script dir
-#   file:
-#     path: /boot/config/plugins/user.scripts/scripts/sync-media
-#     state: directory
-#     mode: '0700'
-#     owner: root
-#     group: root
-
-# - name: copy user script
-#   copy:
-#     src: user_script_godaam_media_sync.sh
-#     dest: /boot/config/plugins/user.scripts/scripts/sync-media/script
-#     mode: '0600'
-#     owner: root
-#     group: root
+- name: copy sync script
+  copy:
+    src: scripts/sync.sh
+    dest: /mnt/user/scripts/sync.sh
+    mode: '0555'
+    owner: nobody
+    group: users
 
 - include_tasks: plugin_file.yaml
   vars: 
@@ -41,11 +33,15 @@
 
 - include_tasks: plugin_file.yaml
   vars: 
-    file: plugins/user.scripts/scripts/sync-media/script
+    file: plugins/user.scripts/scripts/backup-media/script
 
 - include_tasks: plugin_file.yaml
   vars: 
     file: plugins/user.scripts/scripts/sync-data/script
+
+- include_tasks: plugin_file.yaml
+  vars: 
+    file: plugins/user.scripts/scripts/sync-media/script
 
 - include_tasks: template_dir.yaml
   vars:
