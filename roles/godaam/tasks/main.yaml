@@ -47,7 +47,33 @@
   vars: 
     file: plugins/user.scripts/scripts/talkies-photos/script
 
+- include_tasks: plugin_file.yaml
+  vars: 
+    file: plugins/user.scripts/scripts/zbackup/script
+
 - include_tasks: template_dir.yaml
   vars:
     template_src: appdata/homepage
     template_dest: /mnt/user/appdata
+
+- name: setup sensors
+  ansible.builtin.blockinfile:
+    path: /boot/config/go
+    marker: "######## {mark} SENSORS SETUP ########"
+    block: |
+      # modprobe for each sensor
+      modprobe nct6775
+      modprobe coretemp
+      /usr/bin/sensors -s
+
+- name: setup filesystems
+  ansible.builtin.blockinfile:
+    path: /boot/config/go
+    marker: "######## {mark} FILESYSTEMS SETUP ########"
+    block: |
+      # bigger tmpfs
+      mount -o remount,size=256M /var/log
+
+      # zfs ARC allocation
+      echo "#Adjusting ARC memory usage (limit 16GB)"
+      echo 17179869184 > /sys/module/zfs/parameters/zfs_arc_max

@@ -1,0 +1,34 @@
+#!/bin/bash
+#description=backup data to zfs
+#arrayStarted=true
+#name=zfs data backup
+#clearLog=true
+#noParity=true
+
+# setup
+src="/mnt/user/data"
+dst="/zdata/backup/"
+
+# ensure unicode filenames are supported
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+export G_FILENAME_ENCODING="@locale"
+export G_BROKEN_FILENAMES="1"
+
+name="Data share"
+# sync
+if [ ! -d "$src" ]; then
+    /usr/local/emhttp/webGui/scripts/notify -i warning -s "Sync Failure" -d "$name: bad source: $src"
+elif [ ! -d "$dst" ]; then
+    /usr/local/emhttp/webGui/scripts/notify -i warning -s "Sync Failure" -d "$name: bad dest: $dst"
+else
+    echo "Sync ($name): $src => $dst"
+    /usr/local/emhttp/webGui/scripts/notify -i normal -s "Sync Started" -d "Synchronizing $name"
+
+    rsync --archive --verbose --delete $src $dst
+    if [[ $? -eq 0 ]]; then
+        /usr/local/emhttp/webGui/scripts/notify -i normal -s "Sync Complete" -d "Synchronized $name successfully"
+    else 
+        /usr/local/emhttp/webGui/scripts/notify -i warning -s "Sync failed" -d "Error. Failed to synchronize $name"
+    fi
+fi
