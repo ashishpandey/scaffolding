@@ -31,25 +31,17 @@
   vars: 
     file: plugins/theme.engine/custom.css
 
-- include_tasks: plugin_file.yaml
+- name: install user scripts
+  include_tasks: plugin_file.yaml
   vars: 
-    file: plugins/user.scripts/scripts/backup-media/script
-
-- include_tasks: plugin_file.yaml
-  vars: 
-    file: plugins/user.scripts/scripts/sync-data/script
-
-- include_tasks: plugin_file.yaml
-  vars: 
-    file: plugins/user.scripts/scripts/sync-media/script
-
-- include_tasks: plugin_file.yaml
-  vars: 
-    file: plugins/user.scripts/scripts/talkies-photos/script
-
-- include_tasks: plugin_file.yaml
-  vars: 
-    file: plugins/user.scripts/scripts/zbackup/script
+    file: plugins/user.scripts/scripts/{{item}}/script
+  loop:
+    - backup-media
+    - check-docker
+    - sync-data
+    - sync-media
+    - talkies-photos
+    - zbackup
 
 - include_tasks: template_dir.yaml
   vars:

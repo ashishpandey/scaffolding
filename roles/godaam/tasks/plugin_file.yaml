@@ -1,6 +1,10 @@
 ---
 # variables
 # - file: file
+
+- debug:
+    msg: installing /boot/config/{{file}}
+    
 - name: ensure user script dir
   file:
     path: /boot/config/{{ file | dirname }}
