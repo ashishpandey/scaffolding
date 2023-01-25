@@ -38,9 +38,6 @@
   loop:
     - backup-media
     - check-docker
-    - sync-data
-    - sync-media
-    - talkies-photos
     - zbackup
     - zscrub
 
