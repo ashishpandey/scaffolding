@@ -3,14 +3,16 @@
 # https://github.com/benphelps/homepage/wiki/Services
 
 - Media:
-  - Jellyfin:
-      icon: jellyfin.png
+  - Emby:
+      icon: emby.png
       href: http://192.168.1.215:8096
       description: Movies & TV Shows
+      server: my-docker
+      container: emby
       widget:
-          type: jellyfin
+          type: emby
           url: http://192.168.1.215:8096
-          key: "{{ jellyfin_api_key }}"
+          key: "{{ emby_api_key }}"
 
   - Sonarr:
       icon: sonarr.png
@@ -43,21 +45,25 @@
           type: prowlarr
           fields: ["enableIndexers", "numberOfGrabs", "numberOfQueries", "numberOfFailGrabs", "numberOfFailQueries"]
           url: http://192.168.1.215:9696
-          key: "{{ prowlarr_api_key }}"
-
-  - Bazarr:
-      icon: bazarr.png
-      href: http://192.168.1.215:6767
-      container: bazarr
-      widget:
-        type: bazarr
-        url: http://192.168.1.215:6767
-        key: "{{ bazarr_api_key }}"         
+          key: "{{ prowlarr_api_key }}"        
 
 - Data:
+  - "syncthing @ unraid":
+      icon: syncthing.png
+      href: http://192.168.1.215:8384
+      server: my-docker
+      container: syncthing
+  - "syncthing @ talkies":
+      icon: syncthing.png
+      href: http://192.168.1.132:8384
+  - "syncthing @ gigamac":
+      icon: syncthing.png
+      href: http://192.168.1.105:8384
   - paperless:
       icon: paperless-ng.png
       href: http://192.168.1.215:8000
+      server: my-docker
+      container: paperless-ngx
       widget:
         type: paperlessngx
         url: http://192.168.1.215:8000
@@ -67,11 +73,14 @@
 - Network:
   - PiHole:
       icon: pihole.png
-      href: https://pihole.app.apandey.com
+      href: http://192.168.1.18
+      server: my-docker
+      container: pihole
       widget:
         type: pihole
         fields: ["queries", "blocked", "gravity"]
         url: https://pihole.app.apandey.com
+        key: {{ pihole_api_key }}
 
   - Transmission:
       icon: transmission.png

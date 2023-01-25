@@ -2,17 +2,18 @@
 # For configuration options and examples, please see:
 # https://github.com/benphelps/homepage/wiki/Bookmarks
 
+- Docker:
+    - WebUIs:
+        - abbr: UI
+          href: http://192.168.1.215:1111
+
 - Developer:
     - Github:
         - abbr: GH
-          href: https://github.com/
+          href: https://github.com/ashishpandey
 
 - Social:
-    - Reddit:
-        - abbr: RE
-          href: https://reddit.com/
+    - Discord:
+        - abbr: DC
+          href: https://discord.com/channels/1055681497023135764/1055681534029480017
 
-- Entertainment:
-    - YouTube:
-        - abbr: YT
-          href: https://youtube.com/

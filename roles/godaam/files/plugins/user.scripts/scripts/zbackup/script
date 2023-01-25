@@ -6,7 +6,7 @@
 #noParity=true
 
 # setup
-shares="appdata backups data domains gigamac isos photo scripts software video"
+shares="appdata backups data domains gigamac isos nextcloud photo scripts software video"
 dst="/zdata/backup/"
 
 # ensure unicode filenames are supported
@@ -42,7 +42,7 @@ fi
 # snapshot the zfs backup dataset
 snap="zdata/backup@$(date +%Y%m%d-%H%M%S)"
 zfs snapshot -r ${snap}
-if ($status != 0) then
+if ($? != 0) then
     /usr/local/emhttp/webGui/scripts/notify -i warning -s "ZFS Snapshot" -d "failed ${snap}"
     exit 13
 else

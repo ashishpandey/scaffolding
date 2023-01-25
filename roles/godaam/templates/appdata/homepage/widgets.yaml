@@ -8,9 +8,10 @@
     disk: /
 
 - resources:
-    disk: /mnt/user/media
+    disk: /mnt/user
 
-- search:
-    provider: duckduckgo
-    target: _blank
+- unifi_console:
+    url: https://unifi.app.apandey.com
+    username: admin
+    password: "{{ unifi_password }}"
 

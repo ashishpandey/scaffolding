@@ -42,6 +42,7 @@
     - sync-media
     - talkies-photos
     - zbackup
+    - zscrub
 
 - include_tasks: template_dir.yaml
   vars:

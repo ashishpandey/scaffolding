@@ -1,0 +1,25 @@
+#!/bin/bash
+#description=scrub zfs pools
+#arrayStarted=true
+#name=zfs scrub
+#clearLog=true
+#noParity=true
+
+function scrub_pool() {
+    zfspoolname=$1
+    ## At here, check if the pool is at good state before run scrub.
+    pool_status=`zpool status $zfspoolname | grep state | awk '{print $2}'`
+    #echo $pool_status
+    if [ "$pool_status" == "ONLINE" ] ; then
+        /usr/local/emhttp/webGui/scripts/notify -i normal -s "ZFS Scrub" -d "starting scrub on pool ${zfspoolname}"
+        zpool scrub $zfspoolname
+        if ($? != 0) then
+            /usr/local/emhttp/webGui/scripts/notify -i warning -s "ZFS Scrub" -d "failed scrub on pool ${zfspoolname}"
+            exit 13
+        fi
+    else
+        /usr/local/emhttp/webGui/scripts/notify -i warning -s "ZFS Scrub" -d "pool ${zfspoolname} is not ONLINE"
+    fi
+}
+
+scrub_pool zdata
