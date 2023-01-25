@@ -51,6 +51,7 @@
   - "syncthing @ unraid":
       icon: syncthing.png
       href: http://192.168.1.215:8384
+      ping: http://192.168.1.215:8384/rest/noauth/health
       server: my-docker
       container: syncthing
   - "syncthing @ talkies":
