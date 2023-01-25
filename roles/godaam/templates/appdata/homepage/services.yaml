@@ -56,9 +56,11 @@
   - "syncthing @ talkies":
       icon: syncthing.png
       href: http://192.168.1.132:8384
+      ping: https://192.168.1.132:8384/rest/noauth/health
   - "syncthing @ gigamac":
       icon: syncthing.png
       href: http://192.168.1.105:8384
+      ping: http://192.168.1.105:8384/rest/noauth/health
   - paperless:
       icon: paperless-ng.png
       href: http://192.168.1.215:8000
