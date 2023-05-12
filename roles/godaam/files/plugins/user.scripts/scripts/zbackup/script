@@ -48,3 +48,9 @@ if ($? != 0) then
 else
     /usr/local/emhttp/webGui/scripts/notify -i normal -s "ZFS Snapshot" -d "created ${snap}"
 fi
+
+/mnt/user/scripts/zfs_prune_snapshots.sh 1M zdata/backup
+if ($? != 0) then
+    /usr/local/emhttp/webGui/scripts/notify -i warning -s "ZFS Snapshot" -d "could not purge old snapshots"
+    exit 13
+fi

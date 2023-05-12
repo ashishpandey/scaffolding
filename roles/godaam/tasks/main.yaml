@@ -23,6 +23,14 @@
     owner: nobody
     group: users
 
+- name: copy zfs script
+  copy:
+    src: scripts/zfs_prune_snapshots.sh
+    dest: /mnt/user/scripts/zfs_prune_snapshots.sh
+    mode: '0555'
+    owner: nobody
+    group: users
+
 - include_tasks: plugin_file.yaml
   vars: 
     file: plugins/dynamix.system.temp/sensors.conf
