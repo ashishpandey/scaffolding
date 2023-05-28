@@ -46,6 +46,7 @@
   loop:
     - backup-media
     - check-docker
+    - test-print
     - zbackup
     - zscrub
 

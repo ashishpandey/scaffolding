@@ -1,0 +1,12 @@
+#!/bin/bash
+#description=print a test page
+#arrayStarted=true
+#name=print test page 
+#clearLog=true
+
+docker exec cups lpr -P Epson_L6190 /usr/share/cups/data/testprint
+
+if ($? != 0) then
+    /usr/local/emhttp/webGui/scripts/notify -i warning -s "Test Print" -d "failed to print test page"
+    exit 1
+fi
