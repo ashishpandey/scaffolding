@@ -1,0 +1,3 @@
+
+
+[[ $(docker exec -it nextcloud occ update:check --no-ansi) = *"Everything up to date"* ]] && echo "OK" || echo "Update"

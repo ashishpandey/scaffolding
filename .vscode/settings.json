@@ -1,5 +1,6 @@
 {
     "[css]": {
         "editor.colorDecorators": false
-    }
+    },
+    "ansible.python.interpreterPath": "/opt/homebrew/bin/python"
 }

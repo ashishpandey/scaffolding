@@ -7,7 +7,7 @@
 
 # setup
 shares="appdata backups data domains gigamac isos nextcloud photo scripts software video"
-dst="/zdata/backup/"
+dst="/mnt/zdata/backup/"
 
 # ensure unicode filenames are supported
 export LANG="en_US.UTF-8"
@@ -15,25 +15,35 @@ export LC_ALL="en_US.UTF-8"
 export G_FILENAME_ENCODING="@locale"
 export G_BROKEN_FILENAMES="1"
 
+notify_user(sub, msg) {
+    echo $msg
+    /usr/local/emhttp/webGui/scripts/notify -i normal -s $sub -d $msg
+}
+
+warn_user(sub, msg) {
+    echo $msg
+    /usr/local/emhttp/webGui/scripts/notify -i warning -s $sub -d $msg
+}
+
 name="Shares Backup"
 if [ ! -d "$dst" ]; then
-    /usr/local/emhttp/webGui/scripts/notify -i warning -s "Sync Failure" -d "$name: bad dest: $dst"
+    warn_user "$name: bad dest: $dst"
 else
     # sync
-    /usr/local/emhttp/webGui/scripts/notify -i normal -s "Sync Started" -d "$name: Backing up shares to $dst"
+    notify_user "Sync Started", "$name: Backing up shares to $dst"
     for share in $shares
     do
         src="/mnt/user/$share"
         if [ ! -d "$src" ]; then
-            /usr/local/emhttp/webGui/scripts/notify -i warning -s "Sync Failure" -d "$name: bad source: $src"
+            warn_user "Sync Failure", "$name: bad src $src"
         else
             echo "Sync ($share): $src => $dst"
 
             rsync --archive --verbose --delete $src $dst
             if [[ $? -eq 0 ]]; then
-                /usr/local/emhttp/webGui/scripts/notify -i normal -s "Sync Complete" -d "$name: Synchronized $share successfully"
-            else 
-                /usr/local/emhttp/webGui/scripts/notify -i warning -s "Sync failed" -d "$name: Error. Failed to synchronize $share"
+                notify_user "Sync Complete", "$name: Synchronized $share successfully"
+            else
+                warn_user "Sync Failure", "$name: Error. Failed to synchronize $share"
             fi
         fi
     done
@@ -42,15 +52,17 @@ fi
 # snapshot the zfs backup dataset
 snap="zdata/backup@$(date +%Y%m%d-%H%M%S)"
 zfs snapshot -r ${snap}
-if ($? != 0) then
-    /usr/local/emhttp/webGui/scripts/notify -i warning -s "ZFS Snapshot" -d "failed ${snap}"
+if [ $? != 0 ]; then
+    warn_user "ZFS Snapshot", "failed ${snap}"
     exit 13
 else
-    /usr/local/emhttp/webGui/scripts/notify -i normal -s "ZFS Snapshot" -d "created ${snap}"
+    notify_user "ZFS Snapshot", "created ${snap}"
 fi
 
 /mnt/user/scripts/zfs_prune_snapshots.sh 1M zdata/backup
-if ($? != 0) then
-    /usr/local/emhttp/webGui/scripts/notify -i warning -s "ZFS Snapshot" -d "could not purge old snapshots"
+if [ $? != 0 ]; then
+    warn_user "ZFS Snapshot", "could not purge old snapshots"
     exit 13
 fi
+
+echo "zbackup done"
