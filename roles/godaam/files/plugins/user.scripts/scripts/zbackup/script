@@ -15,35 +15,39 @@ export LC_ALL="en_US.UTF-8"
 export G_FILENAME_ENCODING="@locale"
 export G_BROKEN_FILENAMES="1"
 
-notify_user(sub, msg) {
-    echo $msg
-    /usr/local/emhttp/webGui/scripts/notify -i normal -s $sub -d $msg
+notify_user() {
+    sub="$1"
+    msg="$2"
+    echo "$msg"
+    /usr/local/emhttp/webGui/scripts/notify -i normal -s "$sub" -d "$msg"
 }
 
-warn_user(sub, msg) {
-    echo $msg
-    /usr/local/emhttp/webGui/scripts/notify -i warning -s $sub -d $msg
+warn_user() {
+    sub="$1"
+    msg="$2"
+    echo "$msg"
+    /usr/local/emhttp/webGui/scripts/notify -i warning -s "$sub" -d "$msg"
 }
 
 name="Shares Backup"
 if [ ! -d "$dst" ]; then
-    warn_user "$name: bad dest: $dst"
+    warn_user "Sync Failure" "$name: bad dest: $dst"
 else
     # sync
-    notify_user "Sync Started", "$name: Backing up shares to $dst"
+    notify_user "Sync Started" "$name: Backing up shares to $dst"
     for share in $shares
     do
         src="/mnt/user/$share"
         if [ ! -d "$src" ]; then
-            warn_user "Sync Failure", "$name: bad src $src"
+            warn_user "Sync Failure" "$name: bad src $src"
         else
             echo "Sync ($share): $src => $dst"
 
             rsync --archive --verbose --delete $src $dst
             if [[ $? -eq 0 ]]; then
-                notify_user "Sync Complete", "$name: Synchronized $share successfully"
+                notify_user "Sync Complete" "$name: Synchronized $share successfully"
             else
-                warn_user "Sync Failure", "$name: Error. Failed to synchronize $share"
+                warn_user "Sync Failure" "$name: Error. Failed to synchronize $share"
             fi
         fi
     done
@@ -53,15 +57,15 @@ fi
 snap="zdata/backup@$(date +%Y%m%d-%H%M%S)"
 zfs snapshot -r ${snap}
 if [ $? != 0 ]; then
-    warn_user "ZFS Snapshot", "failed ${snap}"
+    warn_user "ZFS Snapshot" "failed ${snap}"
     exit 13
 else
-    notify_user "ZFS Snapshot", "created ${snap}"
+    notify_user "ZFS Snapshot" "created ${snap}"
 fi
 
 /mnt/user/scripts/zfs_prune_snapshots.sh 1M zdata/backup
 if [ $? != 0 ]; then
-    warn_user "ZFS Snapshot", "could not purge old snapshots"
+    warn_user "ZFS Snapshot" "could not purge old snapshots"
     exit 13
 fi
 
