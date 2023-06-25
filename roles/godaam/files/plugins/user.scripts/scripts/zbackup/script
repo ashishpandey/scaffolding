@@ -18,14 +18,14 @@ export G_BROKEN_FILENAMES="1"
 notify_user() {
     sub="$1"
     msg="$2"
-    echo "$msg"
+    echo "notify: $sub > $msg"
     /usr/local/emhttp/webGui/scripts/notify -i normal -s "$sub" -d "$msg"
 }
 
 warn_user() {
     sub="$1"
     msg="$2"
-    echo "$msg"
+    echo "warning: $sub > $msg"
     /usr/local/emhttp/webGui/scripts/notify -i warning -s "$sub" -d "$msg"
 }
 
