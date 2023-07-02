@@ -1,0 +1,75 @@
+ui:
+  title: Gatus
+  header: Jaagte Raho ...
+  description: Monitoring & Alerting @ Home
+alerting:
+  discord:
+    webhook-url: "https://discord.com/api/webhooks/{{ gatus_discord_webhook }}"
+
+endpoints:
+  # network
+  - name: pfsense-ui
+    enabled: true
+    group: network
+    url: "http://192.168.1.1:88"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 150"
+    alerts:
+      - type: discord
+
+  # apps
+  - name: nextcloud
+    enabled: true
+    group: apps
+    url: https://cloud.app.apandey.com/status.php
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+      - "[RESPONSE_TIME] < 500"
+      - "[CERTIFICATE_EXPIRATION] > 480h"
+    alerts:
+      - type: discord      
+
+  # domains
+  - name: ashishpandey.com
+    group: domain
+    url: "https://ashishpandey.com/"
+    interval: 24h
+    conditions:
+      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days
+    alerts:
+      - type: discord
+  - name: apandey.com
+    group: domain
+    url: "https://apandey.com/"
+    interval: 24h
+    conditions:
+      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days
+    alerts:
+      - type: discord
+  - name: ashishp.com
+    group: domain
+    url: "https://ashishp.com/"
+    interval: 24h
+    conditions:
+      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days   
+    alerts:
+      - type: discord  
+  - name: aditpandey.com
+    group: domain
+    url: "https://aditpandey.com/"
+    interval: 24h
+    conditions:
+      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days 
+    alerts:
+      - type: discord
+  - name: avikpandey.com
+    group: domain
+    url: "https://avikpandey.com/"
+    interval: 24h
+    conditions:
+      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days
+    alerts:
+      - type: discord

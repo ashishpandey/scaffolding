@@ -50,10 +50,23 @@
     - zbackup
     - zscrub
 
-- include_tasks: template_dir.yaml
+- name: homepage app
+  import_tasks: template_dir.yaml
   vars:
     template_src: appdata/homepage
     template_dest: /mnt/user/appdata
+  tags:
+    - homepage
+    - app
+
+- name: gatus app
+  import_tasks: template_dir.yaml
+  vars:
+    template_src: appdata/gatus
+    template_dest: /mnt/user/appdata
+  tags:
+    - gatus
+    - app
 
 - name: setup sensors
   ansible.builtin.blockinfile:

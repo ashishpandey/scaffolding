@@ -15,7 +15,7 @@
   gather_facts: False
   roles:
     - role: influxdb 
-      tags: influxdb
+      tags: influxdb      
 
 - hosts: badagodaam
   gather_facts: False
