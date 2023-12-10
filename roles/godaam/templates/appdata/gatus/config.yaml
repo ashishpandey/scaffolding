@@ -2,74 +2,83 @@ ui:
   title: Gatus
   header: Jaagte Raho ...
   description: Monitoring & Alerting @ Home
+
+storage:
+  type: sqlite
+  path: /config/data.db
+  caching: true
+
 alerting:
   discord:
     webhook-url: "https://discord.com/api/webhooks/{{ gatus_discord_webhook }}"
 
+webapp: &webapp
+  enabled: true
+  group: apps
+  interval: 5m
+  conditions:
+    - "[STATUS] == 200"
+    - "[RESPONSE_TIME] < 200"
+  alerts:
+    - type: discord
+
+domain: &domain
+  group: x-domain
+  interval: 24h
+  conditions:
+    - "[DOMAIN_EXPIRATION] > 480h"  # 20 days
+  alerts:
+    - type: discord
+
 endpoints:
   # network
   - name: pfsense-ui
-    enabled: true
+    <<: *webapp
     group: network
     url: "http://192.168.1.1:88"
-    interval: 5m
-    conditions:
-      - "[STATUS] == 200"
-      - "[RESPONSE_TIME] < 150"
-    alerts:
-      - type: discord
+
+  # IoT
+  - name: home assistant
+    <<: *webapp
+    group: iot
+    url: "http://192.168.1.215:8123/manifest.json"
+
+  - name: zigbee coordinator
+    <<: *webapp
+    group: iot
+    url: "http://192.168.90.10"
+
+  - name: zigbee2mqtt
+    <<: *webapp
+    group: iot
+    url: "http://192.168.1.215:9442"
 
   # apps
   - name: nextcloud
-    enabled: true
-    group: apps
+    <<: *webapp
     url: https://cloud.app.apandey.com/status.php
-    interval: 5m
     conditions:
       - "[STATUS] == 200"
       - "[RESPONSE_TIME] < 500"
       - "[CERTIFICATE_EXPIRATION] > 480h"
-    alerts:
-      - type: discord      
+    
+  - name: willow-app-server
+    <<: *webapp
+    url: http://192.168.1.215:8502/api/status?type=asyncio_tasks
 
   # domains
   - name: ashishpandey.com
-    group: domain
+    <<: *domain
     url: "https://ashishpandey.com/"
-    interval: 24h
-    conditions:
-      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days
-    alerts:
-      - type: discord
   - name: apandey.com
-    group: domain
+    <<: *domain
     url: "https://apandey.com/"
-    interval: 24h
-    conditions:
-      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days
-    alerts:
-      - type: discord
   - name: ashishp.com
-    group: domain
+    <<: *domain
     url: "https://ashishp.com/"
-    interval: 24h
-    conditions:
-      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days   
-    alerts:
-      - type: discord  
   - name: aditpandey.com
-    group: domain
+    <<: *domain
     url: "https://aditpandey.com/"
-    interval: 24h
-    conditions:
-      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days 
-    alerts:
-      - type: discord
   - name: avikpandey.com
-    group: domain
+    <<: *domain
     url: "https://avikpandey.com/"
-    interval: 24h
-    conditions:
-      - "[DOMAIN_EXPIRATION] > 480h"  # 20 days
-    alerts:
-      - type: discord

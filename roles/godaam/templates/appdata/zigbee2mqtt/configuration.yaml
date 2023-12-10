@@ -1,0 +1,58 @@
+homeassistant: false
+frontend:
+  port: 9442
+mqtt:
+  base_topic: zigbee2mqtt
+  server: mqtt://192.168.1.215:1883
+  user: mqtt
+  password: "{{ mqtt_password }}"
+serial:
+  port: tcp://192.168.90.10:6638
+  baudrate: 115200
+  disable_led: false
+advanced:
+  transmit_power: 20
+  network_key:
+    - 190
+    - 83
+    - 189
+    - 177
+    - 136
+    - 8
+    - 193
+    - 86
+    - 92
+    - 54
+    - 202
+    - 75
+    - 15
+    - 158
+    - 162
+    - 36
+  pan_id: 62342
+  ext_pan_id:
+    - 244
+    - 212
+    - 165
+    - 134
+    - 92
+    - 74
+    - 146
+    - 190
+  log_syslog:
+    app_name: Zigbee2MQTT
+    eol: /n
+    host: localhost
+    localhost: localhost
+    path: /dev/log
+    pid: process.pid
+    port: 514
+    protocol: udp4
+    type: '5424'
+  channel: 15
+  homeassistant_legacy_entity_attributes: false
+  legacy_api: false
+  legacy_availability_payload: false
+permit_join: true
+device_options:
+  legacy: false
