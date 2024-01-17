@@ -130,3 +130,27 @@
   tags:
     - willow
     - app
+
+- name: create compose directory structure
+  file:
+    path: /boot/config/plugins/compose.manager/projects/{{ item.path }}
+    state: directory
+    mode: '0700'
+  with_filetree: ../templates/plugins/compose.manager/projects/
+  loop_control:
+    label: '{{item.path}}'
+  when: item.state == 'directory'
+  tags:
+    - compose
+
+- name: deploy compose files
+  template:
+    src: "{{ item.src }}"
+    dest: /boot/config/plugins/compose.manager/projects/{{ item.path }}
+    mode: '0600'
+  with_filetree: ../templates/plugins/compose.manager/projects/
+  loop_control:
+    label: '{{item.path}}'
+  when: item.state == 'file'
+  tags:
+    - compose

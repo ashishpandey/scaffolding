@@ -1,0 +1,8 @@
+services:
+  jacobalberty-unifi:
+    labels:
+      folder.view: Network
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/unifi-controller-logo.png'
+      net.unraid.docker.webui: 'http://[IP]:[PORT:8443]'
+      net.unraid.docker.shell: '/bin/bash'

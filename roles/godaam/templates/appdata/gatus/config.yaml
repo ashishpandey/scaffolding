@@ -34,14 +34,19 @@ endpoints:
   # network
   - name: pfsense-ui
     <<: *webapp
-    group: network
+    group: infra
     url: "http://192.168.1.1:88"
+
+  - name: godaam-kvm
+    <<: *webapp
+    group: infra
+    url: https://godaam-kvm.app.apandey.com/
 
   # IoT
   - name: home assistant
     <<: *webapp
     group: iot
-    url: "http://192.168.1.215:8123/manifest.json"
+    url: "http://192.168.1.50:8123/manifest.json"
 
   - name: zigbee coordinator
     <<: *webapp
@@ -51,7 +56,7 @@ endpoints:
   - name: zigbee2mqtt
     <<: *webapp
     group: iot
-    url: "http://192.168.1.215:9442"
+    url: "http://192.168.1.53:9442"
 
   # apps
   - name: nextcloud
@@ -64,7 +69,13 @@ endpoints:
     
   - name: willow-app-server
     <<: *webapp
-    url: http://192.168.1.215:8502/api/status?type=asyncio_tasks
+    url: http://192.168.1.56:8502/api/status?type=asyncio_tasks
+  - name: willow-interface-server
+    <<: *webapp
+    url: http://192.168.1.55:19001/api/ping
+  - name: willow-interface-server-frontend
+    <<: *webapp
+    url: http://192.168.1.55:19001/favicon.ico
 
   # domains
   - name: ashishpandey.com
@@ -82,3 +93,7 @@ endpoints:
   - name: avikpandey.com
     <<: *domain
     url: "https://avikpandey.com/"
+  - name: ashish-pragya.com
+    <<: *domain
+    url: "https://ashish-pragya.com/"
+  

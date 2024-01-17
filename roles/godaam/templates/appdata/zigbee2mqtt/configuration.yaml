@@ -1,15 +1,17 @@
-homeassistant: false
+homeassistant: true
 frontend:
   port: 9442
 mqtt:
   base_topic: zigbee2mqtt
-  server: mqtt://192.168.1.215:1883
+  server: mqtt://192.168.1.51:1883
   user: mqtt
   password: "{{ mqtt_password }}"
 serial:
   port: tcp://192.168.90.10:6638
   baudrate: 115200
   disable_led: false
+experimental:
+  new_api: false
 advanced:
   transmit_power: 20
   network_key:
@@ -56,3 +58,52 @@ advanced:
 permit_join: true
 device_options:
   legacy: false
+availability:
+  active:
+    timeout: 10
+  passive:
+    timeout: 1500
+devices:
+  '0xa4c1383617e19a28':
+    friendly_name: camera_box
+  '0x943469fffe24f4e1':
+    friendly_name: lr_spot_r1
+  '0x943469fffe2aeb18':
+    friendly_name: lr_spot_r2
+  '0x943469fffe250f0f':
+    friendly_name: lr_spot_r3
+  '0x943469fffe24f7c0':
+    friendly_name: lr_spot_f4
+  '0x943469fffe250f51':
+    friendly_name: lr_spot_f1
+  '0x385b44fffe5a75be':
+    friendly_name: lr_spot_f5
+    description: 'LR Spot Front #5'
+  '0x84ba20fffe5122c7':
+    friendly_name: lr_spot_f2
+  '0x943469fffe2aeb22':
+    friendly_name: lr_spot_f3
+  '0x943469fffe25101e':
+    friendly_name: lr_spot_r4
+  '0x943469fffe235080':
+    friendly_name: lr_spot_r5
+  '0xcc86ecfffe875623':
+    friendly_name: ikea_usb_repeater
+    description: IKEA E1746 USB Zigbee Repeater
+groups:
+  '1':
+    friendly_name: lr_spots_front
+    devices:
+      - 0x943469fffe250f51/1
+      - 0x84ba20fffe5122c7/1
+      - 0x943469fffe2aeb22/1
+      - 0x943469fffe24f7c0/1
+      - 0x385b44fffe5a75be/1
+  '2':
+    friendly_name: lr_spots_rear
+    devices:
+      - 0x943469fffe24f4e1/1
+      - 0x943469fffe2aeb18/1
+      - 0x943469fffe250f0f/1
+      - 0x943469fffe25101e/1
+      - 0x943469fffe235080/1
