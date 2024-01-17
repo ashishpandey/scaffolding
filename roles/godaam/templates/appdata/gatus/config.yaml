@@ -21,6 +21,8 @@ webapp: &webapp
     - "[RESPONSE_TIME] < 200"
   alerts:
     - type: discord
+      description: "healthcheck failed"
+      send-on-resolved: true
 
 domain: &domain
   group: x-domain
@@ -29,6 +31,8 @@ domain: &domain
     - "[DOMAIN_EXPIRATION] > 480h"  # 20 days
   alerts:
     - type: discord
+      description: "domain expiry alert"
+      send-on-resolved: true
 
 endpoints:
   # network
