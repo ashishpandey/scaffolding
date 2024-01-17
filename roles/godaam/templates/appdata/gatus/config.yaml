@@ -33,6 +33,7 @@ domain: &domain
     - type: discord
       description: "domain expiry alert"
       send-on-resolved: true
+      failure-threshold: 1
 
 endpoints:
   # network
