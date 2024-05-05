@@ -29,5 +29,6 @@ services:
     volumes:
       - '/mnt/cache/appdata/jacobalberty-unifi:/unifi:rw'
     labels:
+      traefik.enable: true
       traefik.http.services.unifi-controller.loadbalancer.server.port: '8443'
       traefik.http.services.unifi-controller.loadbalancer.server.scheme: https

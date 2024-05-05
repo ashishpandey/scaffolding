@@ -60,6 +60,7 @@ services:
     ports:
       - '192.168.1.55:19001:19001'
     labels:
+      traefik.enable: true
       traefik.http.routers.wis-proxy.rule: 'Host(`wis.app.apandey.com`)'
       traefik.http.services.wis-proxy.loadbalancer.server.port: '19001'
     volumes:

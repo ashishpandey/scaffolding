@@ -1,0 +1,12 @@
+http:
+  routers:
+    unraid:
+      entryPoints:
+      - http
+      service: unraid
+      rule: "Host(`unraid.capp.apandey.com`)"
+  services:
+    unraid:
+      loadBalancer:
+        servers:
+        - url: "http://192.168.1.215:80/"

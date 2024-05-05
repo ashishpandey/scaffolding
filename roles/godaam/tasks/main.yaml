@@ -131,6 +131,15 @@
     - willow
     - app
 
+- name: traefik config
+  import_tasks: template_dir.yaml
+  vars:
+    template_src: appdata/traefik
+    template_dest: /mnt/cache/appdata
+  tags:
+    - traefik
+    - app
+
 - name: create compose directory structure
   file:
     path: /boot/config/plugins/compose.manager/projects/{{ item.path }}
