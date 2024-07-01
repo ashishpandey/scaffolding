@@ -8,6 +8,7 @@ services:
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /mnt/user/gigamac/LRExport:/mnt/LRExport:ro
+      - /mnt/user/nextcloud/ashish/files/InstantUpload:/mnt/PhonePhotos/Ashish:ro
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
@@ -32,6 +33,7 @@ services:
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload
       - /mnt/user/gigamac/LRExport:/mnt/LRExport:ro
+      - /mnt/user/nextcloud/ashish/files/InstantUpload:/mnt/PhonePhotos/Ashish:ro
       - /etc/localtime:/etc/localtime:ro
     env_file:
       - .env
