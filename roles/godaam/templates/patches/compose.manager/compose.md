@@ -2,7 +2,7 @@
 
 apply https://github.com/dcflachs/compose_plugin/pull/27
 
-under /usr/local/emhttpd/plugins/compose.manager 
+under /usr/local/emhttp/plugins/compose.manager 
 
 on every reboot
 

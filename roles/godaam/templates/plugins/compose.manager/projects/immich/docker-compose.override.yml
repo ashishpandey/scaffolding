@@ -7,12 +7,12 @@ services:
       net.unraid.docker.webui: 'http://[IP]:[PORT:2283]'
       net.unraid.docker.shell: '/bin/sh'
 
-  immich-microservices:
-    labels:
-      folder.view: immich
-      net.unraid.docker.managed: 'composeman'
-      net.unraid.docker.icon: 'https://raw.githubusercontent.com/immich-app/immich/main/design/immich-logo.png'
-      net.unraid.docker.shell: '/bin/sh'
+  # immich-microservices:
+  #   labels:
+  #     folder.view: immich
+  #     net.unraid.docker.managed: 'composeman'
+  #     net.unraid.docker.icon: 'https://raw.githubusercontent.com/immich-app/immich/main/design/immich-logo.png'
+  #     net.unraid.docker.shell: '/bin/sh'
 
   immich-machine-learning:
     labels:

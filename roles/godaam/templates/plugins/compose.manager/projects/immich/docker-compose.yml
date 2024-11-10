@@ -7,6 +7,7 @@ x-immich-server: &immich_server
     - /mnt/user/gigamac/LRExport:/mnt/LRExport:ro
     - /mnt/user/nextcloud/ashish/files/InstantUpload:/mnt/PhonePhotos/Ashish:ro
     - /mnt/user/nextcloud/pragya/files/InstantUpload:/mnt/PhonePhotos/Pragya
+    - /mnt/user/data/backups/pragya/Takeout:/mnt/GooglePhotos/Pragya
     - /etc/localtime:/etc/localtime:ro
   env_file:
     - .env
@@ -19,22 +20,9 @@ services:
   immich-server:
     <<: *immich_server
     container_name: immich_server
-    command: ['start.sh', 'immich']
+    # command: ['start.sh', 'immich']
     ports:
-      - 192.168.1.215:2283:3001
-    labels:
-      traefik.enable: true
-      traefik.http.routers.immich.rule: 'Host(`immich.app.apandey.com`)'
-      # traefik.http.services.immich.loadbalancer.server.port: '3001'
-    
-  immich-microservices:
-    <<: *immich_server
-    container_name: immich_microservices
-    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
-    # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/hardware-transcoding
-    #   file: hwaccel.transcoding.yml
-    #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
-    command: ['start.sh', 'microservices']
+      - 192.168.1.215:2283:2283
     environment:
       NVIDIA_VISIBLE_DEVICES: GPU-6ef3c871-0136-0942-8509-60c53293b64d
       NVIDIA_DRIVER_CAPABILITIES: all
@@ -48,10 +36,36 @@ services:
                 - gpu
                 - compute
                 - video
-    depends_on:
-      - redis
-      - database
-    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.routers.immich.rule: 'Host(`immich.app.apandey.com`)'
+      # traefik.http.services.immich.loadbalancer.server.port: '3001'
+
+  # immich-microservices:
+  #   <<: *immich_server
+  #   container_name: immich_microservices
+  #   image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
+  #   # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/hardware-transcoding
+  #   #   file: hwaccel.transcoding.yml
+  #   #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
+  #   command: ['start.sh', 'microservices']
+  #   environment:
+  #     NVIDIA_VISIBLE_DEVICES: GPU-6ef3c871-0136-0942-8509-60c53293b64d
+  #     NVIDIA_DRIVER_CAPABILITIES: all
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities:
+  #               - gpu
+  #               - compute
+  #               - video
+  #   depends_on:
+  #     - redis
+  #     - database
+  #   restart: unless-stopped
 
   immich-machine-learning:
     container_name: immich_machine_learning

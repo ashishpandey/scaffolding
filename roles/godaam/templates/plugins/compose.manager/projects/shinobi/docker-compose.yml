@@ -1,0 +1,39 @@
+name: shinobi
+services:
+  shinobi-db:
+    container_name: shinobi-db
+    image: mysql:5.7
+    volumes:
+      - /mnt/user/appdata/Shinobi/mysql-db:/var/lib/mysql
+      - /mnt/user/appdata/Shinobi/mysql-init:/docker-entrypoint-initdb.d:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    restart: unless-stopped
+  
+  shinobi:
+    container_name: shinobi
+    image: ghcr.io/ashishpandey/shinobi:latest
+    environment:
+      HOME: /home/Shinobi
+      DB_HOST: shinobi-db
+      DB_DATABASE: ${MYSQL_DATABASE}
+      DB_USER: ${MYSQL_USER}
+      DB_PASSWORD: ${MYSQL_PASSWORD}
+      SHINOBI_UPDATE: 'false'
+      NVIDIA_VISIBLE_DEVICES: ''
+      NVIDIA_DRIVER_CAPABILITIES: ''
+    ports:
+      - '18080:8080/tcp'
+    volumes:
+      - /dev/shm/ShinobiRAM:/dev/shm/streams
+      - /mnt/tsdb/tsdata/shinobi/videos:/storage/videos:rw
+      - /mnt/user/appdata/Shinobi/home:/home/Shinobi:rw
+      - /etc/localtime:/etc/localtime:ro
+    labels:
+      traefik.enable: true
+      traefik.http.services.unifi-controller.loadbalancer.server.port: '18080'
+      traefik.http.services.unifi-controller.loadbalancer.server.scheme: https
