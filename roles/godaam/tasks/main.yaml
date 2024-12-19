@@ -163,3 +163,19 @@
   when: item.state == 'file'
   tags:
     - compose
+
+- name: deploy esphome secrets
+  template:
+    src: esphome/secrets.yaml
+    dest: /mnt/user/appdata/esphome/config/secrets.yaml
+    mode: '0666'
+  tags:
+    - esphome
+
+- name: deploy esphome projects
+  copy:
+    src: esphome/
+    dest: /mnt/user/appdata/esphome/config/
+    mode: '0666'
+  tags:
+    - esphome

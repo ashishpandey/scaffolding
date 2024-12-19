@@ -1,0 +1,9 @@
+substitutions:
+  name: usb-switch-2
+  name_underscored: usb_switch_2
+  friendly_name: USB Switch 2
+  ip_address: 192.168.90.207
+
+packages:
+  usb_switch: !include common/.sinilink-usb-switch.yaml
+

@@ -1,0 +1,20 @@
+services:
+  esphome:
+    container_name: esphome
+    hostname: esphome
+    network_mode: bridge
+    image: ghcr.io/esphome/esphome
+    ports:
+      - 6052:6052
+    volumes:
+      - /mnt/user/appdata/esphome/config:/config
+      - /etc/localtime:/etc/localtime:ro
+    restart: always
+    environment:
+      - USERNAME=espadmin
+      - PASSWORD=${ESPHOME_PASSWORD}
+    labels:
+      traefik.enable: true
+      traefik.http.services.esphome.loadbalancer.server.port: '6052'
+      traefik.http.services.esphome.loadbalancer.server.scheme: https
+      traefik.http.routers.api.rule: 'Host(`esphome.app.apandey.com`)'
