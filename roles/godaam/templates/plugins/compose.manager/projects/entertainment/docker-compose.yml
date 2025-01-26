@@ -1,0 +1,47 @@
+services:
+  transmission-openvpn:
+    container_name: Transmission_VPN
+    network_mode: bridge
+    cap_add:
+      - NET_ADMIN
+    image: haugene/transmission-openvpn
+    ports:
+      - '9091:9091/tcp'
+    volumes:
+      # config goes to appdata
+      - '/mnt/user/appdata/transmission/config/:/config:rw'
+      - '/mnt/user/appdata/transmission/openvpn:/etc/openvpn/custom:rw'
+      # data goes to transmission share
+      - '/mnt/user/transmission/data/:/data:rw'
+      # move torrents storage from home dir to under transmission share
+      - '/mnt/user/transmission/torrents/:/config/transmission-home/torrents:rw'
+    restart: always
+    environment:
+      - PGID=100
+      - PUID=99
+      - TZ=Asia/Shanghai
+      - 'OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 --mute-replay-warnings'
+      - GLOBAL_APPLY_PERMISSIONS=false
+      - HOST_CONTAINERNAME=Transmission_VPN
+      - HOST_HOSTNAME=Godaam
+      - HOST_OS=Unraid
+      - LOCAL_NETWORK=192.168.1.0/24
+      - OPENVPN_CONFIG=default
+      - OPENVPN_PASSWORD=${TORGUARD_PASSWORD}
+      - OPENVPN_PROVIDER=CUSTOM
+      - OPENVPN_USERNAME=${TORGUARD_USER}
+      - TRANSMISSION_CACHE_SIZE_MB=100
+      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=50
+      - TRANSMISSION_IDLE_SEEDING_LIMIT=10080
+      - TRANSMISSION_IDLE_SEEDING_LIMIT_ENABLED=true
+      - TRANSMISSION_PEER_LIMIT_GLOBAL=500
+      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=50
+      - TRANSMISSION_PORT_FORWARDING_ENABLED=true
+      - TRANSMISSION_RATIO_LIMIT=2
+      - TRANSMISSION_RATIO_LIMIT_ENABLED=true
+      - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=false
+      - TRANSMISSION_WEB_UI=flood-for-transmission
+      - WEBPROXY_ENABLED=false
+    dns:
+        - 8.8.8.8
+        - 1.1.1.1
