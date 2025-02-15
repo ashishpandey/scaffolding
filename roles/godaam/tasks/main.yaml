@@ -106,30 +106,30 @@
       echo "#Adjusting ARC memory usage (limit 16GB)"
       echo 17179869184 > /sys/module/zfs/parameters/zfs_arc_max
 
-- name: willow interface server files
-  unarchive:
-    src: https://github.com/toverainc/willow-inference-server/tarball/8f0d637
-    dest: /mnt/user/appdata/willow-interface-server
-    remote_src: yes
-    extra_opts:
-      - --strip-components=1 
-      - toverainc-willow-inference-server-8f0d637/nginx
-      - toverainc-willow-inference-server-8f0d637/utils.sh
-    mode: '0777'
-    owner: nobody
-    group: users
-  tags:
-    - willow
-    - app
+# - name: willow interface server files
+#   unarchive:
+#     src: https://github.com/toverainc/willow-inference-server/tarball/8f0d637
+#     dest: /mnt/user/appdata/willow-interface-server
+#     remote_src: yes
+#     extra_opts:
+#       - --strip-components=1 
+#       - toverainc-willow-inference-server-8f0d637/nginx
+#       - toverainc-willow-inference-server-8f0d637/utils.sh
+#     mode: '0777'
+#     owner: nobody
+#     group: users
+#   tags:
+#     - willow
+#     - app
 
-- name: wis nginx app
-  import_tasks: template_dir.yaml
-  vars:
-    template_src: appdata/willow-interface-server
-    template_dest: /mnt/user/appdata
-  tags:
-    - willow
-    - app
+# - name: wis nginx app
+#   import_tasks: template_dir.yaml
+#   vars:
+#     template_src: appdata/willow-interface-server
+#     template_dest: /mnt/user/appdata
+#   tags:
+#     - willow
+#     - app
 
 - name: traefik config
   import_tasks: template_dir.yaml
@@ -139,6 +139,12 @@
   tags:
     - traefik
     - app
+
+- name: homepage app
+  import_tasks: compose_patch.yaml
+  tags:
+    - compose
+    - compose.patch
 
 - name: create compose directory structure
   file:

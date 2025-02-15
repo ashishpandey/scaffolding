@@ -72,15 +72,15 @@ endpoints:
       - "[RESPONSE_TIME] < 500"
       - "[CERTIFICATE_EXPIRATION] > 480h"
     
-  - name: willow-app-server
-    <<: *webapp
-    url: http://192.168.1.56:8502/api/status?type=asyncio_tasks
-  - name: willow-interface-server
-    <<: *webapp
-    url: http://192.168.1.55:19001/api/ping
-  - name: willow-interface-server-frontend
-    <<: *webapp
-    url: http://192.168.1.55:19001/favicon.ico
+  # - name: willow-app-server
+  #   <<: *webapp
+  #   url: http://192.168.1.56:8502/api/status?type=asyncio_tasks
+  # - name: willow-interface-server
+  #   <<: *webapp
+  #   url: http://192.168.1.55:19001/api/ping
+  # - name: willow-interface-server-frontend
+  #   <<: *webapp
+  #   url: http://192.168.1.55:19001/favicon.ico
 
   # domains
   - name: ashishpandey.com

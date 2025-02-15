@@ -6,3 +6,30 @@ services:
       net.unraid.docker.webui: http://[IP]:[PORT:9091]/
       net.unraid.docker.icon: https://raw.githubusercontent.com/activ/docker-templates/master/activ/images/transmission-icon.png
       net.unraid.docker.shell: /bin/bash
+  # calibre:
+  #   labels:
+  #     folder.view: Data
+  #     net.unraid.docker.managed: composeman
+  #     net.unraid.docker.webui: http://[IP]:[PORT:7171]/
+  #     net.unraid.docker.icon: https://manual.calibre-ebook.com/_static/logo.png
+  #     net.unraid.docker.shell: /bin/bash
+  calibre-web:
+    labels:
+      folder.view: Data
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: http://[IP]:[PORT:8083]/
+      net.unraid.docker.icon: https://manual.calibre-ebook.com/_static/logo.png
+      net.unraid.docker.shell: /bin/bash
+  calibre-downloader:
+    labels:
+      folder.view: Data
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: http://[IP]:[PORT:8084]/
+      net.unraid.docker.icon: https://manual.calibre-ebook.com/_static/logo.png
+      net.unraid.docker.shell: /bin/bash
+  cloudflare-bypass:
+    labels:
+      folder.view: Services
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.icon: https://developers.cloudflare.com/_astro/logo.p_ySeMR1.svg
+      net.unraid.docker.shell: /bin/bash

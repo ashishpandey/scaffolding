@@ -1,0 +1,14 @@
+services:
+  traefik:
+    labels:
+      folder.view: Network
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: 'http://[IP]:[PORT:8080]/'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/ibracorp/unraid-templates/master/icons/traefik.png'
+  actual_server:
+    labels:
+      folder.view: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.icon: 'https://avatars.githubusercontent.com/u/37879538?s=200&v=4'
+      net.unraid.docker.webui: 'http://[IP]:[PORT:5006]'
+      net.unraid.docker.shell: '/bin/bash'

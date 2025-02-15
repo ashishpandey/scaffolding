@@ -41,32 +41,6 @@ services:
       traefik.http.routers.immich.rule: 'Host(`immich.app.apandey.com`)'
       # traefik.http.services.immich.loadbalancer.server.port: '3001'
 
-  # immich-microservices:
-  #   <<: *immich_server
-  #   container_name: immich_microservices
-  #   image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
-  #   # extends: # uncomment this section for hardware acceleration - see https://immich.app/docs/features/hardware-transcoding
-  #   #   file: hwaccel.transcoding.yml
-  #   #   service: cpu # set to one of [nvenc, quicksync, rkmpp, vaapi, vaapi-wsl] for accelerated transcoding
-  #   command: ['start.sh', 'microservices']
-  #   environment:
-  #     NVIDIA_VISIBLE_DEVICES: GPU-6ef3c871-0136-0942-8509-60c53293b64d
-  #     NVIDIA_DRIVER_CAPABILITIES: all
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: 1
-  #             capabilities:
-  #               - gpu
-  #               - compute
-  #               - video
-  #   depends_on:
-  #     - redis
-  #     - database
-  #   restart: unless-stopped
-
   immich-machine-learning:
     container_name: immich_machine_learning
     # For hardware acceleration, add one of -[armnn, cuda, openvino] to the image tag.

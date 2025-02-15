@@ -45,3 +45,67 @@ services:
     dns:
         - 8.8.8.8
         - 1.1.1.1
+    labels:
+      traefik.enable: true
+      traefik.http.services.calibre-web.loadbalancer.server.port: '9091'
+      traefik.http.routers.calibre-web.rule: 'Host(`transmission-vpn.app.apandey.com`)'
+  # calibre:
+  #   container_name: calibre
+  #   network_mode: bridge
+  #   image: linuxserver/calibre
+  #   volumes:
+  #     - /mnt/user/appdata/calibre/server/:/config
+  #     - /mnt/user/media/Books/:/books
+  #   restart: always
+  #   environment:
+  #     PUID: 99
+  #     PGID: 100
+  #     TZ: Asia/Shanghai
+  #     TITLE: KitaabGhar
+  #     START_DOCKER: false
+  #     DISABLE_IPV6: true
+  #   labels:
+  #     traefik.enable: true
+  #     traefik.http.services.calibre.loadbalancer.server.port: '8080'
+  #     traefik.http.routers.calibre.rule: 'Host(`calibre.app.apandey.com`)'
+  calibre-web:
+    image: crocodilestick/calibre-web-automated:latest
+    container_name: calibre-web
+    network_mode: bridge
+    environment:
+      PUID: 99
+      PGID: 100
+      TZ: Asia/Shanghai
+    volumes:
+      - /mnt/user/appdata/calibre/web:/config
+      - /mnt/user/media/Books/Calibre:/calibre-library
+      - /mnt/user/appdata/calibre/ingest:/cwa-book-ingest
+    labels:
+      traefik.enable: true
+      traefik.http.services.calibre-web.loadbalancer.server.port: '8083'
+      traefik.http.routers.calibre-web.rule: 'Host(`books.app.apandey.com`)'
+
+  calibre-downloader:
+    image: ghcr.io/calibrain/calibre-web-automated-book-downloader:latest
+    container_name: calibre-downloader
+    network_mode: bridge
+    environment:
+      PUID: 99
+      PGID: 100
+      TZ: Asia/Shanghai
+      FLASK_PORT: 8084
+      FLASK_DEBUG: false
+      CLOUDFLARE_PROXY_URL: http://cloudflare-bypass:8000
+      INGEST_DIR: /cwa-book-ingest
+      BOOK_LANGUAGE: en
+    volumes:
+      - /mnt/user/appdata/calibre/ingest:/cwa-book-ingest
+    labels:
+      traefik.enable: true
+      traefik.http.services.calibre-downloader.loadbalancer.server.port: '8084'
+      traefik.http.routers.calibre-downloader.rule: 'Host(`get-books.app.apandey.com`)'
+
+  cloudflare-bypass:
+    image: ghcr.io/sarperavci/cloudflarebypassforscraping:latest
+    container_name: cloudflare-bypass
+    network_mode: bridge

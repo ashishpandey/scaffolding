@@ -1,0 +1,6 @@
+---
+- name: deploy compose DockerUpdate script
+  copy:
+    src: emhttp-patch/compose.manager/php/DockerUpdate.php
+    dest: /usr/local/emhttp/plugins/compose.manager/php/DockerUpdate.php
+    mode: '0755'

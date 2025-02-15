@@ -1,0 +1,39 @@
+services:
+  traefik:
+    container_name: traefik
+    image: traefik:latest
+    network_mode: bridge
+    environment:
+        - TZ=Asia/Shanghai
+    ports:
+      - '12443:443/tcp'
+      - '80:80/tcp'
+      - '81:8080/tcp'
+    volumes:
+      - '/mnt/cache/appdata/traefik:/etc/traefik:rw'
+      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+    labels:
+      traefik.enable: true
+      traefik.http.routers.api.rule: Host(`app.apandey.com`)
+      traefik.http.routers.api.entryPoints: http
+      traefik.http.routers.api.service: api@internal
+  actual_server:
+    container_name: actual
+    hostname: actual-server
+    network_mode: bridge
+    image: actualbudget/actual-server:latest
+    ports:
+      - '5006:5006'
+    environment:
+      - ACTUAL_PORT=5006
+      - ACTUAL_UPLOAD_FILE_SYNC_SIZE_LIMIT_MB=20
+      - ACTUAL_UPLOAD_SYNC_ENCRYPTED_FILE_SYNC_SIZE_LIMIT_MB=50
+      - ACTUAL_UPLOAD_FILE_SIZE_LIMIT_MB=20
+      # See all options and more details at https://actualbudget.github.io/docs/Installing/Configuration
+    volumes:
+      - /mnt/user/appdata/actual-server:/data
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.services.actual-server.loadbalancer.server.port: '5006'
+      traefik.http.routers.actual-server.rule: 'Host(`actual.app.apandey.com`)'

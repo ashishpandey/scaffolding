@@ -7,7 +7,7 @@ entryPoints:
     address: ":80"
 
 serversTransport:
-  insecureSkipVerify: false
+  insecureSkipVerify: true
 
 providers:
   docker:
