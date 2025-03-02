@@ -4,9 +4,9 @@ http:
       entryPoints:
       - http
       service: unraid
-      rule: "Host(`unraid.capp.apandey.com`)"
+      rule: "Host(`unraid.app.apandey.com`)"
   services:
     unraid:
       loadBalancer:
         servers:
-        - url: "http://192.168.1.215:80/"
+        - url: "http://192.168.1.215:88/"

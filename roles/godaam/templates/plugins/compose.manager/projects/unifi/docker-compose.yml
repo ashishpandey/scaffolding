@@ -32,3 +32,4 @@ services:
       traefik.enable: true
       traefik.http.services.unifi-controller.loadbalancer.server.port: '8443'
       traefik.http.services.unifi-controller.loadbalancer.server.scheme: https
+      traefik.http.routers.unifi-controller.rule: 'Host(`unifi.app.apandey.com`)'

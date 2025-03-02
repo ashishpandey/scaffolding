@@ -35,5 +35,6 @@ services:
       - /etc/localtime:/etc/localtime:ro
     labels:
       traefik.enable: true
-      traefik.http.services.unifi-controller.loadbalancer.server.port: '18080'
-      traefik.http.services.unifi-controller.loadbalancer.server.scheme: https
+      traefik.http.services.shinobi.loadbalancer.server.port: '18080'
+      traefik.http.services.shinobi.loadbalancer.server.scheme: https
+      traefik.http.routers.shinobi.rule: 'Host(`shinobi.app.apandey.com`)'

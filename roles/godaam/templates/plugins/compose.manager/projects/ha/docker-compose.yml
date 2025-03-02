@@ -16,5 +16,5 @@ services:
     labels:
       traefik.enable: true
       traefik.http.services.esphome.loadbalancer.server.port: '6052'
-      traefik.http.services.esphome.loadbalancer.server.scheme: https
-      traefik.http.routers.api.rule: 'Host(`esphome.app.apandey.com`)'
+      # traefik.http.services.esphome.loadbalancer.server.scheme: https
+      traefik.http.routers.esphome.rule: 'Host(`esphome.app.apandey.com`)'

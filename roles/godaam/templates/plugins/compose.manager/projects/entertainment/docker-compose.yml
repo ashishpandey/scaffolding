@@ -47,27 +47,8 @@ services:
         - 1.1.1.1
     labels:
       traefik.enable: true
-      traefik.http.services.calibre-web.loadbalancer.server.port: '9091'
-      traefik.http.routers.calibre-web.rule: 'Host(`transmission-vpn.app.apandey.com`)'
-  # calibre:
-  #   container_name: calibre
-  #   network_mode: bridge
-  #   image: linuxserver/calibre
-  #   volumes:
-  #     - /mnt/user/appdata/calibre/server/:/config
-  #     - /mnt/user/media/Books/:/books
-  #   restart: always
-  #   environment:
-  #     PUID: 99
-  #     PGID: 100
-  #     TZ: Asia/Shanghai
-  #     TITLE: KitaabGhar
-  #     START_DOCKER: false
-  #     DISABLE_IPV6: true
-  #   labels:
-  #     traefik.enable: true
-  #     traefik.http.services.calibre.loadbalancer.server.port: '8080'
-  #     traefik.http.routers.calibre.rule: 'Host(`calibre.app.apandey.com`)'
+      traefik.http.services.transmission.loadbalancer.server.port: '9091'
+      traefik.http.routers.transmission.rule: 'Host(`transmission-vpn.app.apandey.com`)'
   calibre-web:
     image: crocodilestick/calibre-web-automated:latest
     container_name: calibre-web
@@ -80,6 +61,7 @@ services:
       - /mnt/user/appdata/calibre/web:/config
       - /mnt/user/media/Books/Calibre:/calibre-library
       - /mnt/user/appdata/calibre/ingest:/cwa-book-ingest
+    restart: always
     labels:
       traefik.enable: true
       traefik.http.services.calibre-web.loadbalancer.server.port: '8083'
@@ -100,12 +82,31 @@ services:
       BOOK_LANGUAGE: en
     volumes:
       - /mnt/user/appdata/calibre/ingest:/cwa-book-ingest
+    restart: always
     labels:
       traefik.enable: true
       traefik.http.services.calibre-downloader.loadbalancer.server.port: '8084'
-      traefik.http.routers.calibre-downloader.rule: 'Host(`get-books.app.apandey.com`)'
+      traefik.http.routers.calibre-downloader.rule: 'Host(`librarian.app.apandey.com`)'
 
   cloudflare-bypass:
     image: ghcr.io/sarperavci/cloudflarebypassforscraping:latest
     container_name: cloudflare-bypass
     network_mode: bridge
+    restart: always
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    network_mode: bridge
+    environment:
+      PUID: 99
+      PGID: 100
+      TZ: Asia/Shanghai
+    volumes:
+      - /mnt/user/appdata/bazarr/config:/config
+      - /mnt/user/media/:/media
+    restart: always
+    labels:
+      traefik.enable: true
+      traefik.http.services.bazarr.loadbalancer.server.port: '6767'
+      traefik.http.routers.bazarr.rule: 'Host(`bazarr.app.apandey.com`)'
