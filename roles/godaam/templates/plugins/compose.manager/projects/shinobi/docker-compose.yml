@@ -1,40 +1,34 @@
 name: shinobi
 services:
-  shinobi-db:
-    container_name: shinobi-db
-    image: mysql:5.7
-    volumes:
-      - /mnt/user/appdata/Shinobi/mysql-db:/var/lib/mysql
-      - /mnt/user/appdata/Shinobi/mysql-init:/docker-entrypoint-initdb.d:ro
-      - /etc/localtime:/etc/localtime:ro
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
-      MYSQL_USER: ${MYSQL_USER}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+  frigate:
+    container_name: frigate
+    network_mode: bridge
     restart: unless-stopped
-  
-  shinobi:
-    container_name: shinobi
-    image: ghcr.io/ashishpandey/shinobi:latest
+    image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
     environment:
-      HOME: /home/Shinobi
-      DB_HOST: shinobi-db
-      DB_DATABASE: ${MYSQL_DATABASE}
-      DB_USER: ${MYSQL_USER}
-      DB_PASSWORD: ${MYSQL_PASSWORD}
-      SHINOBI_UPDATE: 'false'
-      NVIDIA_VISIBLE_DEVICES: ''
-      NVIDIA_DRIVER_CAPABILITIES: ''
-    ports:
-      - '18080:8080/tcp'
+      NVIDIA_VISIBLE_DEVICES: GPU-6ef3c871-0136-0942-8509-60c53293b64d
+      NVIDIA_DRIVER_CAPABILITIES: all
+      YOLO_MODELS: yolov7-320
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     volumes:
-      - /dev/shm/ShinobiRAM:/dev/shm/streams
-      - /mnt/tsdb/tsdata/shinobi/videos:/storage/videos:rw
-      - /mnt/user/appdata/Shinobi/home:/home/Shinobi:rw
+      - /mnt/user/appdata/frigate:/config
+      - /mnt/tsdb/tsdata/frigate/storage:/media/frigate
+      - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
       - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8971:8971"
+      - "8554:8554" # RTSP feeds
     labels:
       traefik.enable: true
-      traefik.http.services.shinobi.loadbalancer.server.port: '18080'
-      traefik.http.services.shinobi.loadbalancer.server.scheme: https
-      traefik.http.routers.shinobi.rule: 'Host(`shinobi.app.apandey.com`)'
+      traefik.http.services.frigate.loadbalancer.server.port: '8971'
+      # traefik.http.services.frigate.loadbalancer.server.scheme: https
+      traefik.http.routers.frigate.rule: 'Host(`frigate.app.apandey.com`)'

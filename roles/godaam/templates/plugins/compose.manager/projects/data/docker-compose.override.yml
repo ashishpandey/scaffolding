@@ -1,0 +1,14 @@
+services:
+  rclone:
+    labels:
+      folder.view2: Data
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: 'http://[IP]:[PORT:5572]/'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/rclone/rclone/master/graphics/logo/logo_symbol/logo_symbol_color_256px.png'
+
+  syncthing:
+    labels:
+      folder.view2: Data
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: 'http://[IP]:[PORT:8384]'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/syncthing-logo.png'

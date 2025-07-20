@@ -1,0 +1,48 @@
+services:
+  rclone:
+    container_name: rclone
+    image: rclone/rclone:latest
+    network_mode: bridge
+    command: 
+      - rcd 
+      - --rc-web-gui 
+      - --rc-web-gui-update 
+      - --rc-web-gui-force-update 
+      - --rc-web-gui-no-open-browser
+      - --rc-addr 
+      - :5572
+      - --rc-user 
+      - rclone 
+      - --rc-pass 
+      - "${RCLONE_PASS}"
+    environment:
+      TZ: Asia/Hong_Kong
+      PHP_TZ: Asia/Hong_Kong
+      PGID: '100'
+      PUID: '99'
+    ports:
+      - '5572:5572'
+    volumes:
+      - '/mnt/user/data/GDrive/:/mnt/GDrive:rw,slave'
+      - '/mnt/user/appdata/rclone:/config/rclone:rw'
+    devices:
+      - /dev/fuse
+        
+  syncthing:
+    container_name: syncthing
+    image: lscr.io/linuxserver/syncthing:latest
+    network_mode: bridge
+    environment:
+      TZ: Asia/Shanghai
+      PUID: '99'
+      PGID: '100'
+      UMASK: '022'
+    ports:
+      - '8384:8384/tcp'
+      - '22000:22000/tcp'
+      - '22000:22000/udp'
+      - '21027:21027/udp'
+    volumes:
+      - '/mnt/user:/data:rw'
+      - '/mnt/user/appdata/syncthing:/config:rw'
+    

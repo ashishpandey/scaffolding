@@ -1,7 +1,7 @@
 services:
   immich-server:
     labels:
-      folder.view: immich
+      folder.view2: immich
       net.unraid.docker.managed: 'composeman'
       net.unraid.docker.icon: 'https://raw.githubusercontent.com/immich-app/immich/main/design/immich-logo.png'
       net.unraid.docker.webui: 'http://[IP]:[PORT:2283]'
@@ -9,28 +9,28 @@ services:
 
   # immich-microservices:
   #   labels:
-  #     folder.view: immich
+  #     folder.view2: immich
   #     net.unraid.docker.managed: 'composeman'
   #     net.unraid.docker.icon: 'https://raw.githubusercontent.com/immich-app/immich/main/design/immich-logo.png'
   #     net.unraid.docker.shell: '/bin/sh'
 
   immich-machine-learning:
     labels:
-      folder.view: immich
+      folder.view2: immich
       net.unraid.docker.managed: 'composeman'
       net.unraid.docker.icon: 'https://upload.wikimedia.org/wikipedia/commons/d/d5/Hey_Machine_Learning_Logo.png'
       net.unraid.docker.shell: '/bin/sh'
 
   redis:
     labels:
-      folder.view: immich
+      folder.view2: immich
       net.unraid.docker.managed: 'composeman'
       net.unraid.docker.icon: 'https://avatars.githubusercontent.com/u/1529926?s=200&v=4'
       net.unraid.docker.shell: '/bin/sh'
 
   database:
     labels:
-      folder.view: immich
+      folder.view2: immich
       net.unraid.docker.managed: 'composeman'
       net.unraid.docker.icon: 'https://avatars.githubusercontent.com/u/177543?s=200&v=4'
       net.unraid.docker.shell: '/bin/sh'

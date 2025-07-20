@@ -1,4 +1,19 @@
 services:
+  cups:
+    container_name: cups
+    image: ydkn/cups
+    network_mode: bridge
+    environment:
+      - TZ=Asia/Shanghai
+      - HOST_OS=Unraid
+      - HOST_HOSTNAME=Godaam
+      - HOST_CONTAINERNAME=cups
+      - ADMIN_PASSWORD=${CUPS_PASSWORD}
+    ports:
+      - '631:631/tcp'
+    volumes:
+      - '/mnt/user/appdata/cups/:/etc/cups/:rw'
+
   # traefik:
   #   container_name: traefik
   #   image: traefik:latest
@@ -17,6 +32,24 @@ services:
   #     traefik.http.routers.api.rule: Host(`app.apandey.com`)
   #     traefik.http.routers.api.entryPoints: http
   #     traefik.http.routers.api.service: api@internal
+  wud:
+    container_name: wud
+    image: getwud/wud:latest
+    network_mode: bridge
+    environment:
+      - TZ=Asia/Shanghai
+      - WUD_WATCHER_LOCAL_CRON=0 1 * * *
+      - WUD_REGISTRY_HUB_PUBLIC_LOGIN={{ docker_hub_username }}
+      - WUD_REGISTRY_HUB_PUBLIC_PASSWORD={{ docker_hub_api_key }}
+      - WUD_TRIGGER_DISCORD_1_URL=${WUD_DISCORD_WEBHOOK}
+      - WUD_TRIGGER_DISCORD_1_BOTUSERNAME=WUD@Godaam
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+    labels:
+      traefik.enable: true
+      traefik.http.services.wud.loadbalancer.server.port: '3000'
+      traefik.http.routers.wud.rule: 'Host(`wud.app.apandey.com`)'
+
   actual_server:
     container_name: actual
     hostname: actual-server
@@ -37,3 +70,86 @@ services:
       traefik.enable: true
       traefik.http.services.actual-server.loadbalancer.server.port: '5006'
       traefik.http.routers.actual-server.rule: 'Host(`actual.app.apandey.com`)'
+
+  nextcloud-db:
+    container_name: nextcloud-db
+    image: lscr.io/linuxserver/mariadb
+    network_mode: bridge
+    environment:
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_PASSWORD: ${NEXTCLOUD_DB_ROOT_PASS}
+      MYSQL_DATABASE: nextcloud
+      MYSQL_USER: nextcloud
+      MYSQL_PASSWORD: ${NEXTCLOUD_DB_PASS}
+      PUID: '99'
+      PGID: '100'
+      UMASK: '022'
+    ports:
+      - '3306:3306/tcp'
+    volumes:
+      - '/mnt/user/appdata/mariadb:/config:rw'
+    
+  nextcloud:
+    container_name: nextcloud
+    image: lscr.io/linuxserver/nextcloud:30.0.5
+    network_mode: bridge
+    environment:
+      TZ: Asia/Shanghai
+      PUID: '99'
+      PGID: '100'
+      UMASK: '022'
+    ports:
+      - '3443:443/tcp'
+    volumes:
+      - '/mnt/user/nextcloud/:/data:rw'
+      - '/mnt/user/appdata/nextcloud:/config:rw'
+
+  paperless-redis:
+    container_name: paperless_redis
+    image: redis
+    network_mode: bridge
+    environment:
+      TZ: Asia/Shanghai
+    ports:
+      - '6379:6379/tcp'
+
+  paperless-ngx:
+    container_name: paperless-ngx
+    image: ghcr.io/paperless-ngx/paperless-ngx
+    network_mode: bridge
+    environment:
+      TZ: Asia/Shanghai
+      PAPERLESS_REDIS: redis://192.168.1.215:6379
+      PAPERLESS_OCR_LANGUAGE: eng
+      PAPERLESS_OCR_LANGUAGES: ""
+      PAPERLESS_FILENAME_FORMAT: "{created}-{correspondent}-{title}"
+      PAPERLESS_TIME_ZONE: Asia/Hong_Kong
+      PAPERLESS_IGNORE_DATES: ""
+      PAPERLESS_CONSUMER_POLLING: "0"
+      PAPERLESS_SECRET_KEY: "${PAPERLESS_SECRET_KEY}"
+      USERMAP_UID: "99"
+      USERMAP_GID: "100"
+    ports:
+      - '8000:8000/tcp'
+    volumes:
+      - '/mnt/user/appdata/paperless-ngx/data:/usr/src/paperless/data:rw'
+      - '/mnt/user/appdata/paperless-ngx/media:/usr/src/paperless/media:rw'
+      - '/mnt/user/appdata/paperless-ngx/consume:/usr/src/paperless/consume:rw'
+      - '/mnt/user/appdata/paperless-ngx/export:/usr/src/paperless/export:rw'
+      
+      
+  vaultwarden:
+    container_name: vaultwarden
+    image: vaultwarden/server
+    network_mode: bridge
+    environment:
+      TZ: Asia/Shanghai
+      HOST_CONTAINERNAME: vaultwarden
+      SIGNUPS_ALLOWED: true
+      INVITATIONS_ALLOWED: true
+      WEBSOCKET_ENABLED: false
+      ADMIN_TOKEN: "${VAULT_ADMIN_TOKEN}"
+    ports:
+        - '4743:80/tcp'
+    volumes:
+        - '/mnt/user/appdata/vaultwarden:/data:rw'

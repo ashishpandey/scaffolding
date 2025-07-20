@@ -40,7 +40,7 @@ services:
       - TRANSMISSION_RATIO_LIMIT=2
       - TRANSMISSION_RATIO_LIMIT_ENABLED=true
       - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=false
-      - TRANSMISSION_WEB_UI=flood-for-transmission
+      - TRANSMISSION_WEB_UI=transmissionic
       - WEBPROXY_ENABLED=false
     dns:
         - 8.8.8.8

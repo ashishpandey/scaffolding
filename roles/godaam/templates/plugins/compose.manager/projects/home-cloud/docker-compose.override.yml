@@ -1,14 +1,62 @@
 services:
+  cups:
+    labels:
+      folder.view2: Services
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: https://[IP]:[PORT:631]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/josecoelho/unraid-templates/main/cups/cups.png
+
   # traefik:
   #   labels:
-  #     folder.view: Network
+  #     folder.view2: Network
   #     net.unraid.docker.managed: composeman
   #     net.unraid.docker.webui: 'http://[IP]:[PORT:8080]/'
   #     net.unraid.docker.icon: 'https://raw.githubusercontent.com/ibracorp/unraid-templates/master/icons/traefik.png'
+
+  wud:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/getwud/wud/refs/heads/main/ui/public/img/icons/android-chrome-192x192.png'
+      net.unraid.docker.webui: 'https://wud.app.apandey.com'
+      net.unraid.docker.shell: '/bin/bash'
+
   actual_server:
     labels:
-      folder.view: Home Cloud
+      folder.view2: Home Cloud
       net.unraid.docker.managed: composeman
       net.unraid.docker.icon: 'https://avatars.githubusercontent.com/u/37879538?s=200&v=4'
       net.unraid.docker.webui: 'http://[IP]:[PORT:5006]'
       net.unraid.docker.shell: '/bin/bash'
+
+  nextcloud:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: https://[IP]:[PORT:443]
+      net.unraid.docker.icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/nextcloud-logo.png
+  nextcloud-db:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/mariadb-logo.png
+
+  paperless-redis:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.icon: https://raw.githubusercontent.com/juusujanar/unraid-templates/master/img/Redis-logo.png
+
+  paperless-ngx:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: http://[IP]:[PORT:8000]
+      net.unraid.docker.icon: https://raw.githubusercontent.com/selfhosters/unRAID-CA-templates/master/templates/img/paperless.png
+
+  vaultwarden:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: http://[IP]:[PORT:80]/admin'
+      net.unraid.docker.icon: https://raw.githubusercontent.com/selfhosters/unRAID-CA-templates/master/templates/img/bitwardenrs.png

@@ -1,14 +1,8 @@
 services:
-  shinobi-db:
+  frigate:
     labels:
-      folder.view: IoT
+      folder.view2: IoT
       net.unraid.docker.managed: 'composeman'
-      net.unraid.docker.icon: 'https://www.mysql.com/common/logos/logo-mysql-170x115.png'
-      net.unraid.docker.shell: '/bin/bash'
-  shinobi:
-    labels:
-      folder.view: IoT
-      net.unraid.docker.managed: 'composeman'
-      net.unraid.docker.icon: 'https://raw.githubusercontent.com/selfhosters/unRAID-CA-templates/master/templates/img/shinobi.png'
-      net.unraid.docker.webui: 'http://[IP]:[PORT:18080]'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/blakeblackshear/frigate/refs/heads/dev/web/public/images/android-chrome-192x192.png'
+      net.unraid.docker.webui: 'https://[IP]:[PORT:8971]'
       net.unraid.docker.shell: '/bin/bash'

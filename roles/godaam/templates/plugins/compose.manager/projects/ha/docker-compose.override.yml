@@ -1,7 +1,7 @@
 services:
   esphome:
     labels:
-      folder.view: IoT
+      folder.view2: IoT
       net.unraid.docker.managed: 'composeman'
       net.unraid.docker.icon: 'https://raw.githubusercontent.com/esphome/esphome/af66753c1b49f230e57685d44ae2ef2eb7ddc60e/esphome/dashboard/static/images/favicon.ico'
       net.unraid.docker.webui: 'http://[IP]:[PORT:6052]'
