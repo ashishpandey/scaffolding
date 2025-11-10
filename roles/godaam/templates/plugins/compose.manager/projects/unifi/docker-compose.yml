@@ -1,6 +1,5 @@
-version: '3.3'
 services:
-  jacobalberty-unifi:
+  unifi:
     container_name: unifi-network
     network_mode: bridge
     image: jacobalberty/unifi:latest

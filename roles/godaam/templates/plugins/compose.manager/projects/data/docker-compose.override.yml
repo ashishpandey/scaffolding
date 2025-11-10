@@ -1,4 +1,18 @@
 services:
+
+  docker-cache:
+    labels:
+      folder.view2: Docker
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: 'http://[IP]:[PORT:5000]/'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/juusujanar/unraid-templates/refs/heads/master/img/DockerRegistry-logo.png'
+  docker-cache-browser:
+    labels:
+      folder.view2: Docker
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: 'http://[IP]:[PORT:8080]'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/juusujanar/unraid-templates/refs/heads/master/img/DockerRegistry-logo.png'
+
   rclone:
     labels:
       folder.view2: Data

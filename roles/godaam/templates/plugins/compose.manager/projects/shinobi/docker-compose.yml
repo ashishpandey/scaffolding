@@ -9,6 +9,7 @@ services:
       NVIDIA_VISIBLE_DEVICES: GPU-6ef3c871-0136-0942-8509-60c53293b64d
       NVIDIA_DRIVER_CAPABILITIES: all
       YOLO_MODELS: yolov7-320
+    shm_size: 1g
     deploy:
       resources:
         reservations:
@@ -27,8 +28,10 @@ services:
     ports:
       - "8971:8971"
       - "8554:8554" # RTSP feeds
+      - "8555:8555/tcp" # WebRTC
+      - "8555:8555/udp" # WebRTC
+      - "1984:1984" # go2rtc
     labels:
       traefik.enable: true
       traefik.http.services.frigate.loadbalancer.server.port: '8971'
-      # traefik.http.services.frigate.loadbalancer.server.scheme: https
       traefik.http.routers.frigate.rule: 'Host(`frigate.app.apandey.com`)'

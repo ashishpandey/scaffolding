@@ -1,0 +1,41 @@
+version: 0.1
+log:
+  accesslog:
+    disabled: true
+  level: info
+  fields:
+    service: registry
+storage:
+  cache:
+    blobdescriptor: inmemory
+  filesystem:
+    rootdirectory: /var/lib/registry
+  # tag:
+  #   concurrencylimit: 8
+  # delete:
+  #   enabled: false
+  # maintenance:
+  #   uploadpurging:
+  #     enabled: true
+  #     age: 168h
+  #     interval: 24h
+  #     dryrun: false
+  #   readonly:
+  #     enabled: false
+  # redirect:
+  #   disable: true
+http:
+  addr: :5000
+  headers:
+    X-Content-Type-Options: [nosniff]
+proxy:
+  remoteurl: https://registry-1.docker.io
+  ttl: 168h
+# prometheus:
+#   enabled: true
+#   path: /metrics
+# health:
+#   storagedriver:
+#     enabled: true
+#     interval: 10s
+#     threshold: 3

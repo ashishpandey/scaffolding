@@ -1,0 +1,88 @@
+auth:
+  reset_admin_password: false
+  trusted_proxies:
+    - 192.168.1.1/24
+
+tls:
+  enabled: false
+
+mqtt:
+  enabled: false
+
+detectors:
+  onnx:
+    type: onnx
+    device: '0'  #This is the default, select the first GPU
+
+model:
+  model_type: yolonas
+  width: 320
+  height: 320
+  input_pixel_format: bgr
+  input_tensor: nchw
+  path: /config/model_cache/yolo_nas_s.onnx
+  labelmap_path: /labelmap/coco-80.txt
+
+go2rtc:
+  streams:
+    lr_cam:
+      - ffmpeg:rtsp://{{ lr_cam_auth }}@192.168.1.159:554/Streaming/channels/101#backchannel=0#video=copy#audio=aac
+      - isapi://{{ lr_cam_auth }}@192.168.1.159:80/
+    lr_cam_lowres:
+      - ffmpeg:rtsp://{{ lr_cam_auth }}@192.168.1.159:554/Streaming/channels/102#backchannel=0#video=copy#audio=aac
+      - isapi://{{ lr_cam_auth }}@192.168.1.159:80/
+  webrtc:
+    candidates:
+      - 192.168.1.215:8555
+
+cameras:
+  lr_cam:
+    enabled: true
+    ffmpeg:
+      output_args:
+        record: preset-record-generic-audio-copy
+      inputs:
+        - path: rtsp://127.0.0.1:8554/lr_cam
+          input_args: preset-rtsp-restream-low-latency
+          roles:
+            - record
+        - path: rtsp://127.0.0.1:8554/lr_cam_lowres
+          input_args: preset-rtsp-restream-low-latency
+          roles:
+            - detect
+    detect:
+      enabled: true
+      width: 704
+      height: 576
+      fps: 5
+
+version: 0.16-0
+
+ffmpeg:
+  hwaccel_args: preset-nvidia
+
+record:
+  enabled: true
+  retain:
+    days: 3
+    mode: all
+  alerts:
+    retain:
+      days: 30
+      mode: motion
+  detections:
+    retain:
+      days: 30
+      mode: motion
+
+detect:
+  enabled: true
+
+# audio:
+#   enabled: True
+#   listen:
+#     - bark
+#     - fire_alarm
+#     - scream
+#     - speech
+#     - yell

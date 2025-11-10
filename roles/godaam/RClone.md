@@ -20,5 +20,4 @@ select Y for have token, Y for browser. When browser spawning fails, take the au
 rclone sync --dry-run --no-update-modtime --no-update-dir-modtime --exclude-from /mnt/cache/appdata/rclone/excludes.txt /mnt/user/data/Data/NASDocs/ ap-gdrive:/badagodaam/documents
 ```
 
-```
-rclone 
+remove `--dry-run` to do actual sync

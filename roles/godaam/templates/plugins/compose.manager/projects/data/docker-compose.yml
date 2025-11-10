@@ -1,4 +1,39 @@
 services:
+  docker-cache:
+    container_name: docker-cache
+    image: registry:latest
+    network_mode: bridge
+    environment:
+      TZ: Asia/Hong_Kong
+      PHP_TZ: Asia/Hong_Kong
+      PGID: '100'
+      PUID: '99'
+      OTEL_TRACES_EXPORTER: none
+    volumes:
+      - '/mnt/tsdb/tsdata/docker-cache:/var/lib/registry:rw'
+      - '/mnt/cache/appdata/docker-cache:/etc/docker/registry:ro'
+    labels:
+      traefik.enable: true
+      traefik.http.routers.docker-cache.rule: 'Host(`docker-cache.app.apandey.com`)'
+      traefik.http.services.docker-cache.loadbalancer.server.port: '5000'
+
+  docker-cache-browser:
+    container_name: docker-cache-browser
+    image: klausmeyer/docker-registry-browser:latest
+    network_mode: bridge
+    environment:
+      SCRIPT_NAME: /browse
+      RAILS_RELATIVE_URL_ROOT: /browse
+      PUBLIC_REGISTRY_URL: https://docker-cache.app.apandey.com
+      DOCKER_REGISTRY_URL: http://docker-cache:5000
+      SECRET_KEY_BASE: ${DOCKER_BROWSER_KEY}
+    labels:
+      traefik.enable: true
+      traefik.http.routers.docker-cache-browser.rule: 'Host(`docker-cache.app.apandey.com`) && PathPrefix(`/browse`)'
+      traefik.http.services.docker-cache-browser.loadbalancer.server.port: '8080'
+      traefik.http.middlewares.docker-browser-cache.stripprefix.prefixes: /browse
+      traefik.http.routers.docker-cache-browser.middlewares: docker-browser-cache@docker
+
   rclone:
     container_name: rclone
     image: rclone/rclone:latest

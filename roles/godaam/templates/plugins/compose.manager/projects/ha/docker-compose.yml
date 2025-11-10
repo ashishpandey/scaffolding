@@ -3,7 +3,7 @@ services:
     container_name: esphome
     hostname: esphome
     network_mode: bridge
-    image: ghcr.io/esphome/esphome
+    image: esphome/esphome:latest
     ports:
       - 6052:6052
     volumes:

@@ -37,14 +37,22 @@ services:
     image: getwud/wud:latest
     network_mode: bridge
     environment:
-      - TZ=Asia/Shanghai
-      - WUD_WATCHER_LOCAL_CRON=0 1 * * *
-      - WUD_REGISTRY_HUB_PUBLIC_LOGIN={{ docker_hub_username }}
-      - WUD_REGISTRY_HUB_PUBLIC_PASSWORD={{ docker_hub_api_key }}
-      - WUD_TRIGGER_DISCORD_1_URL=${WUD_DISCORD_WEBHOOK}
-      - WUD_TRIGGER_DISCORD_1_BOTUSERNAME=WUD@Godaam
+      TZ: Asia/Hong_Kong
+      PGID: '100'
+      PUID: '99'
+      WUD_WATCHER_LOCAL_CRON: 0 1 * * *
+      WUD_WATCHER_LOCAL_WATCHALL: 'false'
+      WUD_WATCHER_LOCAL_WATCHATSTART: 'false'
+      WUD_WATCHER_LOCAL_WATCHEVENTS: 'false'
+      WUD_REGISTRY_HUB_PUBLIC_LOGIN: "$DOCKER_HUB_USERNAME"
+      WUD_REGISTRY_HUB_PUBLIC_PASSWORD: "$DOCKER_HUB_API_KEY"
+      WUD_REGISTRY_LSCR_LSCR_USERNAME: ashishpandey
+      WUD_REGISTRY_LSCR_LSCR_TOKEN: "$WUD_GITHUB_TOKEN"
+      WUD_TRIGGER_DISCORD_1_URL: "$WUD_DISCORD_WEBHOOK"
+      WUD_TRIGGER_DISCORD_1_BOTUSERNAME: WUD@Godaam
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
+      - '/mnt/cache/appdata/wud:/store'
     labels:
       traefik.enable: true
       traefik.http.services.wud.loadbalancer.server.port: '3000'
@@ -91,7 +99,7 @@ services:
     
   nextcloud:
     container_name: nextcloud
-    image: lscr.io/linuxserver/nextcloud:30.0.5
+    image: lscr.io/linuxserver/nextcloud:32.0.1
     network_mode: bridge
     environment:
       TZ: Asia/Shanghai
@@ -103,6 +111,8 @@ services:
     volumes:
       - '/mnt/user/nextcloud/:/data:rw'
       - '/mnt/user/appdata/nextcloud:/config:rw'
+    labels:
+      wud.tag.include: ^\d+\.\d+\.\d+$$
 
   paperless-redis:
     container_name: paperless_redis

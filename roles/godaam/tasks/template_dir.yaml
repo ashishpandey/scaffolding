@@ -1,4 +1,12 @@
 ---
+- name: ensure target directory exists
+  ansible.builtin.file:
+    path: '{{ template_dest }}/{{ template_src | basename }}'
+    state: directory
+    group: users
+    owner: nobody
+    mode: '0777'
+
 - name: Ensure directory structure exists
   ansible.builtin.file:
     path: '{{ template_dest }}/{{ template_src | basename }}/{{ item.path }}'

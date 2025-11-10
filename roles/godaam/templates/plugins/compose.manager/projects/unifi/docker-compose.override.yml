@@ -1,5 +1,5 @@
 services:
-  jacobalberty-unifi:
+  unifi:
     labels:
       folder.view2: Network
       net.unraid.docker.managed: 'composeman'

@@ -63,6 +63,28 @@ endpoints:
     group: iot
     url: "http://192.168.1.53:9442"
 
+  - name: zigbee switch
+    <<: *webapp
+    group: iot
+    url: "https://hassio.app.apandey.com/api/states/switch.usb_switch_1_switch"
+    headers:
+      Authorization: "Bearer {{hassio_token}}"
+      content-type: application/json
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].state == on"
+
+  - name: cooler switch
+    <<: *webapp
+    group: iot
+    url: "https://hassio.app.apandey.com/api/states/switch.usb_switch_2_switch"
+    headers:
+      Authorization: "Bearer {{hassio_token}}"
+      content-type: application/json
+    conditions:
+      - "[STATUS] == 200"
+      - "[BODY].state == on"
+
   # apps
   - name: nextcloud
     <<: *webapp
@@ -72,16 +94,6 @@ endpoints:
       - "[RESPONSE_TIME] < 500"
       - "[CERTIFICATE_EXPIRATION] > 480h"
     
-  # - name: willow-app-server
-  #   <<: *webapp
-  #   url: http://192.168.1.56:8502/api/status?type=asyncio_tasks
-  # - name: willow-interface-server
-  #   <<: *webapp
-  #   url: http://192.168.1.55:19001/api/ping
-  # - name: willow-interface-server-frontend
-  #   <<: *webapp
-  #   url: http://192.168.1.55:19001/favicon.ico
-
   # domains
   - name: ashishpandey.com
     <<: *domain
