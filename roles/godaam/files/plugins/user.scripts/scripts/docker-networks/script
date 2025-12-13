@@ -1,0 +1,7 @@
+#!/bin/bash
+#description=create docker custom networks
+#arrayStarted=true
+#name=create docker networks
+#clearLog=true
+
+docker network create app_bridge || true
