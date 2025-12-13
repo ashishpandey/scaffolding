@@ -60,3 +60,15 @@ services:
       net.unraid.docker.managed: composeman
       net.unraid.docker.webui: http://[IP]:[PORT:80]/admin'
       net.unraid.docker.icon: https://raw.githubusercontent.com/selfhosters/unRAID-CA-templates/master/templates/img/bitwardenrs.png
+
+  endurain:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: https://endurain.app.apandey.com
+      net.unraid.docker.icon: https://raw.githubusercontent.com/joaovitoriasilva/endurain/master/frontend/app/public/logo/pwa-192x192.png
+  endurain-db:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.icon: https://raw.githubusercontent.com/joaovitoriasilva/endurain/master/frontend/app/public/logo/pwa-maskable-192x192.png

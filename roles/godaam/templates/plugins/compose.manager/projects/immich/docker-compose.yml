@@ -59,7 +59,7 @@ services:
               count: 1
               capabilities: [gpu]
     volumes:
-      - model-cache:/cache
+      - ${MODEL_CACHE_LOCATION}:/cache
     restart: unless-stopped
 
   redis:

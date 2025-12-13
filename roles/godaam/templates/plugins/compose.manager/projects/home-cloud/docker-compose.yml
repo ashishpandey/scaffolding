@@ -99,7 +99,7 @@ services:
     
   nextcloud:
     container_name: nextcloud
-    image: lscr.io/linuxserver/nextcloud:32.0.1
+    image: lscr.io/linuxserver/nextcloud:32.0.3
     network_mode: bridge
     environment:
       TZ: Asia/Shanghai
@@ -163,3 +163,76 @@ services:
         - '4743:80/tcp'
     volumes:
         - '/mnt/user/appdata/vaultwarden:/data:rw'
+
+  endurain:
+    container_name: endurain-app
+    image: ghcr.io/joaovitoriasilva/endurain:latest
+    # network_mode: bridge
+    networks: 
+      - app_bridge
+    volumes:
+      # - /mnt/user/appdata/endurain/frontend/dist/env.js:/app/frontend/dist/env.js # necessary to configure the frontend with public URL
+    #  - <local_path>/endurain/backend/app:/app/backend # Configure volume if you want to edit the code locally by cloning the repo
+      - /mnt/user/appdata/endurain/backend/data:/app/backend/data # necessary for activity files, user images and server images persistence on container image updates
+      - /mnt/user/appdata/endurain/backend/logs:/app/backend/logs # log files for the backend
+    environment:
+      TZ: Asia/Hong_Kong
+      UID: '99'
+      GID: '100'
+      UMASK: '022'
+      DB_PASSWORD: ${ENDURAIN_DB_PASS}
+      DB_DATABASE: endurain
+      DB_USER: endurain
+      DB_HOST: endurain-db
+      SECRET_KEY: ${ENDURAIN_SECRET_KEY}
+      FERNET_KEY: ${ENDURAIN_FERNET_KEY}
+      ENDURAIN_HOST: https://endurain.app.apandey.com
+      BEHIND_PROXY: true
+      # Email configuration (for password reset functionality)
+      #SMTP_HOST=smtp.protonmail.ch
+      #SMTP_PORT=587
+      #SMTP_USERNAME=your-email@example.com
+      #SMTP_PASSWORD=your-app-password
+      #SMTP_SECURE=true
+      #SMTP_SECURE_TYPE=starttls
+    ports:
+      - 38080:8080
+    depends_on:
+      endurain-db:
+        condition: service_healthy
+    labels:
+      traefik.enable: true
+      traefik.http.services.endurain.loadbalancer.server.port: '8080'
+      traefik.http.routers.endurain.rule: 'Host(`endurain.app.apandey.com`)'
+      trafeik.docker.network: app_bridge
+
+  endurain-db:
+    image: docker.io/postgres:17.7
+    container_name: endurain-db
+    networks: 
+      - app_bridge
+    user: '99:100'
+    environment:
+      TZ: Asia/Hong_Kong
+      PUID: '99'
+      PGID: '100'
+      UMASK: '022'
+      POSTGRES_PASSWORD: ${ENDURAIN_DB_PASS}
+      POSTGRES_DB: endurain
+      POSTGRES_USER: endurain
+      PGDATA: /var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U endurain"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - /mnt/user/appdata/endurain/postgres:/var/lib/postgresql/data
+    labels:
+      wud.tag.include: ^17\.\d+$$
+
+networks:
+  app_bridge:
+    name: app_bridge
+    external: true
+      

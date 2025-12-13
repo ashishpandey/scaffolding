@@ -56,15 +56,22 @@
     file: plugins/theme.engine/custom.css
 
 - name: install user scripts
-  include_tasks: plugin_file.yaml
+  include_tasks: 
+    file: plugin_file.yaml
+    apply:
+      tags:
+        - user.scripts
   vars: 
     file: plugins/user.scripts/scripts/{{item}}/script
   loop:
     - backup-media
     - check-docker
+    - docker-networks
     - test-print
     - zbackup
     - zscrub
+  tags:
+    - user.scripts
 
 - name: docker-cache app
   import_tasks: template_dir.yaml
