@@ -18,3 +18,107 @@ services:
       traefik.http.services.esphome.loadbalancer.server.port: '6052'
       # traefik.http.services.esphome.loadbalancer.server.scheme: https
       traefik.http.routers.esphome.rule: 'Host(`esphome.app.apandey.com`)'
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    networks:
+      bond0:
+        ipv4_address: 192.168.1.51
+    environment:
+        TZ: Asia/Hong_Kong
+        # TCP_PORT_1883: 1883
+    ports:
+      - 1883:1883
+    volumes:
+      - /mnt/user/appdata/mosquitto/config/:/mosquitto/config:rw
+      - /mnt/user/appdata/mosquitto/data:/mosquitto/data:rw
+      - /mnt/user/appdata/mosquitto/log:/mosquitto/log:rw
+    restart: unless-stopped
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt
+    container_name: zigbee2mqtt
+    networks:
+      bond0:
+        ipv4_address: 192.168.1.53
+    environment:
+      TZ: Asia/Hong_Kong
+    ports:
+      - 9442:9442
+    volumes:
+      - /mnt/cache/appdata/zigbee2mqtt:/app/data:rw
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      trafeik.docker.network: bond0
+
+  homeassistant:
+    image: lscr.io/linuxserver/homeassistant
+    container_name: homeassistant
+    networks:
+      bond0:
+        ipv4_address: 192.168.1.50
+      app_bridge:
+    environment:
+        TZ: Asia/Hong_Kong
+        PUID: '99'
+        PGID: '100'
+        UMASK: '022'
+    ports:
+      - 8123:8123
+    volumes:
+      - '/mnt/user/appdata/homeassistant:/config:rw'
+    labels:
+      traefik.enable: true
+      trafeik.docker.network: bond0
+    
+  whisper-stt:
+    container_name: whisper-stt
+    image: rhasspy/wyoming-whisper
+    networks:
+      - app_bridge
+    environment:
+      TZ: Asia/Hong_Kong
+      MODEL: base-int8  # tiny, small, medium, large-v1, large-v2, tiny-int8, base-int8, small-int8, medium-int8
+      LANGUAGE: en
+      COMPUTE_TYPE: int8
+      BEAM_SIZE: 5
+    # ports:
+    #   - 10300:10300
+    volumes:
+      - /mnt/user/appdata/whisper-data:/data:rw
+    restart: unless-stopped
+    # labels:
+    #   traefik.enable: true
+    #   traefik.http.services.whisper-stt.loadbalancer.server.port: '5005'
+    #   traefik.http.routers.whisper-stt.rule: 'Host(`whisper.app.apandey.com`)'
+    #   trafeik.docker.network: bond0
+
+  piper-tts:
+    container_name: piper-tts
+    image: rhasspy/wyoming-piper
+    networks:
+      - app_bridge
+    command:
+      - --voice 
+      - en_US-lessac-medium
+    environment:
+      TZ: Asia/Hong_Kong
+    # ports:
+    #   - 10200:10200
+    volumes:
+      - /mnt/user/appdata/piper-data:/data:rw
+    restart: unless-stopped
+    # labels:
+    #   traefik.enable: true
+    #   traefik.http.services/piper-tts.loadbalancer.server.port: '5002'
+    #   traefik.http.routers/piper-tts.rule: 'Host(`piper.app.apandey.com`)'
+    #   trafeik.docker.network: bond0
+
+networks:
+  bond0:
+    external: true
+  app_bridge:
+    name: app_bridge
+    external: true

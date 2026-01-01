@@ -1,28 +1,49 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Data
+    net.unraid.docker.managed: 'composeman'
+    net.unraid.docker.shell: '/bin/bash'
+
 services:
 
   docker-cache:
     labels:
+      <<: *common-labels
       folder.view2: Docker
-      net.unraid.docker.managed: composeman
       net.unraid.docker.webui: 'http://[IP]:[PORT:5000]/'
       net.unraid.docker.icon: 'https://raw.githubusercontent.com/juusujanar/unraid-templates/refs/heads/master/img/DockerRegistry-logo.png'
   docker-cache-browser:
     labels:
+      <<: *common-labels
       folder.view2: Docker
-      net.unraid.docker.managed: composeman
       net.unraid.docker.webui: 'http://[IP]:[PORT:8080]'
       net.unraid.docker.icon: 'https://raw.githubusercontent.com/juusujanar/unraid-templates/refs/heads/master/img/DockerRegistry-logo.png'
 
   rclone:
     labels:
-      folder.view2: Data
-      net.unraid.docker.managed: composeman
+      <<: *common-labels
       net.unraid.docker.webui: 'http://[IP]:[PORT:5572]/'
       net.unraid.docker.icon: 'https://raw.githubusercontent.com/rclone/rclone/master/graphics/logo/logo_symbol/logo_symbol_color_256px.png'
 
   syncthing:
     labels:
-      folder.view2: Data
-      net.unraid.docker.managed: composeman
+      <<: *common-labels
       net.unraid.docker.webui: 'http://[IP]:[PORT:8384]'
       net.unraid.docker.icon: 'https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/syncthing-logo.png'
+
+  calibre-web:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8083]/
+      net.unraid.docker.icon: https://manual.calibre-ebook.com/_static/logo.png
+
+  calibre-downloader:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8084]/
+      net.unraid.docker.icon: https://manual.calibre-ebook.com/_static/logo.png
+
+  cloudflare-bypass:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: https://developers.cloudflare.com/_astro/logo.p_ySeMR1.svg

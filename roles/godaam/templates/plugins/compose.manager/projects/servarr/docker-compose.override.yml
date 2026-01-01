@@ -1,0 +1,42 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Servarr
+    net.unraid.docker.managed: 'composeman'
+    net.unraid.docker.shell: '/bin/bash'
+
+services:
+  bazarr:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://bazarr.app.apandey.com
+      net.unraid.docker.icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/bazarr.png
+
+  cleanuparr:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://cleanuparr.app.apandey.com
+      net.unraid.docker.icon: https://raw.githubusercontent.com/Cleanuparr/Cleanuparr/refs/heads/main/Logo/128.png
+
+  huntarr:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://huntarr.app.apandey.com
+      net.unraid.docker.icon: https://raw.githubusercontent.com/plexguide/Huntarr.io/refs/heads/main/frontend/static/logo/128.png
+
+  prowlarr:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:9696]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/binhex/docker-templates/master/binhex/images/prowlarr-icon.png
+    
+  radarr:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:7878]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/binhex/docker-templates/master/binhex/images/radarr-icon.png
+
+  sonarr:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8989]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/binhex/docker-templates/master/binhex/images/sonarr-icon.png

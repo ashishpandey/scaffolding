@@ -1,8 +1,40 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Home Assistant
+    net.unraid.docker.managed: 'composeman'
+    net.unraid.docker.shell: '/bin/bash'
+
 services:
   esphome:
     labels:
-      folder.view2: IoT
-      net.unraid.docker.managed: 'composeman'
+      <<: *common-labels
       net.unraid.docker.icon: 'https://raw.githubusercontent.com/esphome/esphome/af66753c1b49f230e57685d44ae2ef2eb7ddc60e/esphome/dashboard/static/images/favicon.ico'
       net.unraid.docker.webui: 'http://[IP]:[PORT:6052]'
-      net.unraid.docker.shell: '/bin/bash'
+      
+  mosquitto:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: https://raw.githubusercontent.com/simonsickle/unraid-templates/main/mosquitto/logo.png
+
+  zigbee2mqtt:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:9442]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/digiblur/unraid-docker-templates/master/images/zigbee2mqtt.png
+    
+  homeassistant:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8123]
+      net.unraid.docker.icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/homeassistant-logo.png
+
+  whisper-stt:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: https://avatars.githubusercontent.com/u/1520500?s=64&v=4&.png
+      
+  piper-tts:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: https://avatars.githubusercontent.com/u/59055969?s=64&v=4&.png
+      

@@ -1,0 +1,17 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Services
+    net.unraid.docker.managed: 'composeman'
+    net.unraid.docker.shell: '/bin/bash'
+
+services:
+  cups:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://[IP]:[PORT:631]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/josecoelho/unraid-templates/main/cups/cups.png
+
+  flaresolverr:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: https://raw.githubusercontent.com/FlareSolverr/FlareSolverr/master/resources/flaresolverr_logo.png

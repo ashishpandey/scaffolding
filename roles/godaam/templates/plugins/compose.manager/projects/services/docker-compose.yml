@@ -1,0 +1,31 @@
+x-host-env: &host-env
+  PUID: '99'
+  PGID: '100'
+  UMASK: '022'
+  TZ: Asia/Hong_Kong
+
+services:
+  cups:
+    image: ydkn/cups
+    container_name: cups
+    network_mode: bridge
+    environment:
+      <<: *host-env
+      ADMIN_PASSWORD: ${CUPS_ADMIN_PASSWORD}
+    ports:
+      - '631:631/tcp'
+    volumes:
+      - '/mnt/user/appdata/cups/:/etc/cups/:rw'
+    restart: unless-stopped
+    
+  flaresolverr:
+    image: flaresolverr/flaresolverr
+    container_name: flaresolverr
+    network_mode: bridge
+    environment:
+      <<: *host-env
+      LOG_LEVEL: info
+    ports:
+      - '8191:8191/tcp'
+    restart: unless-stopped
+

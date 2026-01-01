@@ -1,0 +1,4 @@
+networks:
+  app_bridge:
+    name: app_bridge
+    external: true

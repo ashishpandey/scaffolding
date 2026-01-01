@@ -1,35 +1,12 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Entertainment
+    net.unraid.docker.managed: 'composeman'
+    net.unraid.docker.shell: '/bin/bash'
+
 services:
-  transmission-openvpn:
+  emby:
     labels:
-      folder.view2: Entertainment
-      net.unraid.docker.managed: composeman
-      net.unraid.docker.webui: http://[IP]:[PORT:9091]/
-      net.unraid.docker.icon: https://raw.githubusercontent.com/activ/docker-templates/master/activ/images/transmission-icon.png
-      net.unraid.docker.shell: /bin/bash
-  calibre-web:
-    labels:
-      folder.view2: Data
-      net.unraid.docker.managed: composeman
-      net.unraid.docker.webui: http://[IP]:[PORT:8083]/
-      net.unraid.docker.icon: https://manual.calibre-ebook.com/_static/logo.png
-      net.unraid.docker.shell: /bin/bash
-  calibre-downloader:
-    labels:
-      folder.view2: Data
-      net.unraid.docker.managed: composeman
-      net.unraid.docker.webui: http://[IP]:[PORT:8084]/
-      net.unraid.docker.icon: https://manual.calibre-ebook.com/_static/logo.png
-      net.unraid.docker.shell: /bin/bash
-  cloudflare-bypass:
-    labels:
-      folder.view2: Services
-      net.unraid.docker.managed: composeman
-      net.unraid.docker.icon: https://developers.cloudflare.com/_astro/logo.p_ySeMR1.svg
-      net.unraid.docker.shell: /bin/bash
-  bazarr:
-    labels:
-      folder.view2: Entertainment
-      net.unraid.docker.managed: composeman
-      net.unraid.docker.webui: https://bazarr.app.apandey.com
-      net.unraid.docker.icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/bazarr.png
-      net.unraid.docker.shell: /bin/bash
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8096]
+      net.unraid.docker.icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/emby-logo.png

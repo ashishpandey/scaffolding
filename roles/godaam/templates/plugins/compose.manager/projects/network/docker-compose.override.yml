@@ -1,0 +1,17 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Network
+    net.unraid.docker.managed: 'composeman'
+    net.unraid.docker.shell: '/bin/bash'
+
+services:
+  transmission-openvpn:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:9091]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/activ/docker-templates/master/activ/images/transmission-icon.png
+  unifi:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/unifi-controller-logo.png'
+      net.unraid.docker.webui: 'http://[IP]:[PORT:8443]'

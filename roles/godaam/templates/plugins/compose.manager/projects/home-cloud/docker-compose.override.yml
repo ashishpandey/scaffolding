@@ -1,11 +1,4 @@
 services:
-  cups:
-    labels:
-      folder.view2: Services
-      net.unraid.docker.managed: composeman
-      net.unraid.docker.webui: https://[IP]:[PORT:631]/
-      net.unraid.docker.icon: https://raw.githubusercontent.com/josecoelho/unraid-templates/main/cups/cups.png
-
   # traefik:
   #   labels:
   #     folder.view2: Network
@@ -72,3 +65,18 @@ services:
       folder.view2: Home Cloud
       net.unraid.docker.managed: composeman
       net.unraid.docker.icon: https://raw.githubusercontent.com/joaovitoriasilva/endurain/master/frontend/app/public/logo/pwa-maskable-192x192.png
+
+  withings-sync:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: composeman
+      net.unraid.docker.webui: http://[IP]:[PORT:3000]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/jaroslawhartman/withings-sync/master/contrib/icon.png
+      
+  frigate:
+    labels:
+      folder.view2: Home Cloud
+      net.unraid.docker.managed: 'composeman'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/blakeblackshear/frigate/refs/heads/dev/web/public/images/android-chrome-192x192.png'
+      net.unraid.docker.webui: 'https://[IP]:[PORT:8971]'
+      net.unraid.docker.shell: '/bin/bash'

@@ -1,0 +1,42 @@
+x-host-env: &host-env
+  PUID: '99'
+  PGID: '100'
+  UMASK: '022'
+  TZ: Asia/Hong_Kong
+
+services:
+  davinci-resolve-server:
+    image: allebb/studio-server:latest
+    container_name: davinci-resolve-server
+    network_mode: bridge
+    environment:
+      <<: *host-env
+    ports:
+      - '5432:5432/tcp'
+      - '50059:50059/tcp'
+      - '8543:8543/tcp'
+    volumes:
+      - '/mnt/cache/appdata/davinci-resolve-server/hooks/:/var/studio-server/hooks/:rw'
+      - '/mnt/cache/appdata/davinci-resolve-server/database/:/var/studio-server/database/:rw'
+      - '/mnt/cache/appdata/davinci-resolve-server/jobs/:/etc/cron.d/:rw'
+      - '/mnt/user/backups/davinci-resolve-server:/var/studio-server/backups/:rw'
+    restart: unless-stopped
+
+  photostructure:
+    image: photostructure/server:stable
+    container_name: photostructure
+    network_mode: bridge
+    environment:
+      <<: *host-env
+      PS_LOG_LEVEL: error
+    ports:
+      - '1787:1787/tcp'
+    volumes:
+      - '/mnt/user/appdata/photostructure:/ps/library:rw'
+      - '/mnt/user/gigamac/LRExport/:/mnt/to-import-photos:ro'
+      - '/mnt/user/appdata/photostructure/tmp:/ps/tmp:rw'
+      - '/mnt/user/appdata/photostructure/logs:/ps/logs:rw'
+      - '/mnt/user/appdata/photostructure/config:/ps/config:rw'
+    labels:
+      wud.watch.digest: false
+    restart: unless-stopped

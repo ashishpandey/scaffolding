@@ -1,0 +1,100 @@
+x-host-env: &host-env
+  PUID: '99'
+  PGID: '100'
+  UMASK: '022'
+  TZ: Asia/Hong_Kong
+
+services:
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    network_mode: bridge
+    environment:
+      PUID: 99
+      PGID: 100
+      TZ: Asia/Shanghai
+    volumes:
+      - /mnt/user/appdata/bazarr/config:/config
+      - /mnt/user/media/:/media
+    restart: always
+    labels:
+      traefik.enable: true
+      traefik.http.services.bazarr.loadbalancer.server.port: '6767'
+      traefik.http.routers.bazarr.rule: 'Host(`bazarr.app.apandey.com`)'
+
+  cleanuparr:
+    image: ghcr.io/cleanuparr/cleanuparr:latest
+    container_name: cleanuparr
+    network_mode: bridge
+    environment:
+      <<: *host-env
+    expose:
+      - 11011
+    volumes:
+      - /mnt/user/appdata/cleanuparr:/config
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11011/health"]
+      interval: 30s        # Check every 30 seconds
+      timeout: 10s         # Allow up to 10 seconds for response
+      start_period: 30s    # Wait 30 seconds before first check
+      retries: 3           # Mark unhealthy after 3 consecutive failures
+    labels:
+      traefik.enable: true
+
+  huntarr:
+    image: huntarr/huntarr:latest
+    container_name: huntarr
+    network_mode: bridge
+    environment:
+      <<: *host-env
+    expose:
+      - 9705
+    volumes:
+      - /mnt/user/appdata/huntarr/config:/config
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+
+  prowlarr:
+    image: binhex/arch-prowlarr
+    container_name: prowlarr
+    network_mode: bridge
+    environment:
+      <<: *host-env
+    ports:
+      - '9696:9696/tcp'
+    volumes:
+      - '/mnt/cache/appdata/binhex-prowlarr:/config:rw'
+    restart: unless-stopped
+
+  radarr:
+    image: binhex/arch-radarr
+    container_name: radarr
+    network_mode: bridge
+    environment:
+      <<: *host-env
+    ports:
+      - '7878:7878/tcp'
+    volumes:
+      - '/mnt/cache/appdata/binhex-radarr/:/data:rw'
+      - '/mnt/user/media/:/media:rw'
+      - '/mnt/user/transmission/:/transmission/:rw'
+      - '/mnt/user/appdata/binhex-radarr:/config:rw'
+    restart: unless-stopped
+      
+  sonarr:
+    image: binhex/arch-sonarr
+    container_name: sonarr
+    network_mode: bridge
+    environment:
+      <<: *host-env
+    ports:
+      - '8989:8989/tcp'
+      - '9897:9897/tcp'
+    volumes:
+      - '/mnt/user/appdata/binhex-sonarr/:/data:rw'
+      - '/mnt/user/media/:/media:rw'
+      - '/mnt/user/transmission/:/transmission:rw'
+      - '/mnt/user/appdata/binhex-sonarr:/config:rw'
+    restart: unless-stopped

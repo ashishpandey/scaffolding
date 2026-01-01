@@ -1,17 +1,22 @@
+x-host-env: &host-env
+  PUID: '99'
+  PGID: '100'
+  UMASK: '022'
+  TZ: Asia/Hong_Kong
+
 services:
   docker-cache:
     container_name: docker-cache
     image: registry:latest
     network_mode: bridge
     environment:
-      TZ: Asia/Hong_Kong
+      <<: *host-env
       PHP_TZ: Asia/Hong_Kong
-      PGID: '100'
-      PUID: '99'
       OTEL_TRACES_EXPORTER: none
     volumes:
       - '/mnt/tsdb/tsdata/docker-cache:/var/lib/registry:rw'
       - '/mnt/cache/appdata/docker-cache:/etc/docker/registry:ro'
+    restart: unless-stopped
     labels:
       traefik.enable: true
       traefik.http.routers.docker-cache.rule: 'Host(`docker-cache.app.apandey.com`)'
@@ -22,11 +27,13 @@ services:
     image: klausmeyer/docker-registry-browser:latest
     network_mode: bridge
     environment:
+      <<: *host-env
       SCRIPT_NAME: /browse
       RAILS_RELATIVE_URL_ROOT: /browse
       PUBLIC_REGISTRY_URL: https://docker-cache.app.apandey.com
       DOCKER_REGISTRY_URL: http://docker-cache:5000
       SECRET_KEY_BASE: ${DOCKER_BROWSER_KEY}
+    restart: unless-stopped
     labels:
       traefik.enable: true
       traefik.http.routers.docker-cache-browser.rule: 'Host(`docker-cache.app.apandey.com`) && PathPrefix(`/browse`)'
@@ -51,10 +58,8 @@ services:
       - --rc-pass 
       - "${RCLONE_PASS}"
     environment:
-      TZ: Asia/Hong_Kong
+      <<: *host-env
       PHP_TZ: Asia/Hong_Kong
-      PGID: '100'
-      PUID: '99'
     ports:
       - '5572:5572'
     volumes:
@@ -62,16 +67,14 @@ services:
       - '/mnt/user/appdata/rclone:/config/rclone:rw'
     devices:
       - /dev/fuse
+    restart: unless-stopped
         
   syncthing:
     container_name: syncthing
     image: lscr.io/linuxserver/syncthing:latest
     network_mode: bridge
     environment:
-      TZ: Asia/Shanghai
-      PUID: '99'
-      PGID: '100'
-      UMASK: '022'
+      <<: *host-env
     ports:
       - '8384:8384/tcp'
       - '22000:22000/tcp'
@@ -80,4 +83,47 @@ services:
     volumes:
       - '/mnt/user:/data:rw'
       - '/mnt/user/appdata/syncthing:/config:rw'
+    restart: unless-stopped
     
+  calibre-web:
+    image: crocodilestick/calibre-web-automated:latest
+    container_name: calibre-web
+    network_mode: bridge
+    environment:
+      <<: *host-env
+    volumes:
+      - /mnt/user/appdata/calibre/web:/config
+      - /mnt/user/media/Books/Calibre:/calibre-library
+      - /mnt/user/appdata/calibre/ingest:/cwa-book-ingest
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.services.calibre-web.loadbalancer.server.port: '8083'
+      traefik.http.routers.calibre-web.rule: 'Host(`books.app.apandey.com`)'
+
+  calibre-downloader:
+    image: ghcr.io/calibrain/calibre-web-automated-book-downloader:latest
+    container_name: calibre-downloader
+    network_mode: bridge
+    environment:
+      <<: *host-env
+      FLASK_PORT: 8084
+      FLASK_DEBUG: false
+      CLOUDFLARE_PROXY_URL: http://cloudflare-bypass:8000
+      INGEST_DIR: /cwa-book-ingest
+      BOOK_LANGUAGE: en
+    volumes:
+      - /mnt/user/appdata/calibre/ingest:/cwa-book-ingest
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.services.calibre-downloader.loadbalancer.server.port: '8084'
+      traefik.http.routers.calibre-downloader.rule: 'Host(`librarian.app.apandey.com`)'
+
+  cloudflare-bypass:
+    image: ghcr.io/sarperavci/cloudflarebypassforscraping:latest
+    container_name: cloudflare-bypass
+    network_mode: bridge
+    environment:
+      <<: *host-env
+    restart: unless-stopped

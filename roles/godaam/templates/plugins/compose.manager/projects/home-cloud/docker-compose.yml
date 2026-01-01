@@ -1,18 +1,4 @@
 services:
-  cups:
-    container_name: cups
-    image: ydkn/cups
-    network_mode: bridge
-    environment:
-      - TZ=Asia/Shanghai
-      - HOST_OS=Unraid
-      - HOST_HOSTNAME=Godaam
-      - HOST_CONTAINERNAME=cups
-      - ADMIN_PASSWORD=${CUPS_PASSWORD}
-    ports:
-      - '631:631/tcp'
-    volumes:
-      - '/mnt/user/appdata/cups/:/etc/cups/:rw'
 
   # traefik:
   #   container_name: traefik
@@ -230,6 +216,63 @@ services:
       - /mnt/user/appdata/endurain/postgres:/var/lib/postgresql/data
     labels:
       wud.tag.include: ^17\.\d+$$
+
+  withings-sync:
+    image: ghcr.io/jaroslawhartman/withings-sync:latest
+    container_name: withings-sync
+    environment:
+      TZ: Asia/Hong_Kong
+      PUID: '99'
+      PGID: '100'
+      UMASK: '022'
+      GARMIN_USERNAME: ${GARMIN_USERNAME}
+      GARMIN_PASSWORD: ${GARMIN_PASSWORD}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /mnt/user/appdata/withings-sync:/config
+    entrypoint: 
+      - /bin/sh
+      - -c
+      - |
+        echo "5 50 */4 * * * * poetry run withings-sync --config-folder /config" > /home/withings-sync/cronjob
+        supercronic -debug -passthrough-logs /home/withings-sync/cronjob
+    restart: unless-stopped
+
+  frigate:
+    container_name: frigate
+    network_mode: bridge
+    restart: unless-stopped
+    image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
+    environment:
+      NVIDIA_VISIBLE_DEVICES: GPU-6ef3c871-0136-0942-8509-60c53293b64d
+      NVIDIA_DRIVER_CAPABILITIES: all
+      YOLO_MODELS: yolov7-320
+    shm_size: 1g
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    volumes:
+      - /mnt/user/appdata/frigate:/config
+      - /mnt/tsdb/tsdata/frigate/storage:/media/frigate
+      - type: tmpfs # Optional: 1GB of memory, reduces SSD/SD Card wear
+        target: /tmp/cache
+        tmpfs:
+          size: 1000000000
+      - /etc/localtime:/etc/localtime:ro
+    ports:
+      - "8971:8971"
+      - "8554:8554" # RTSP feeds
+      - "8555:8555/tcp" # WebRTC
+      - "8555:8555/udp" # WebRTC
+      - "1984:1984" # go2rtc
+    labels:
+      traefik.enable: true
+      traefik.http.services.frigate.loadbalancer.server.port: '8971'
+      traefik.http.routers.frigate.rule: 'Host(`frigate.app.apandey.com`)'
 
 networks:
   app_bridge:

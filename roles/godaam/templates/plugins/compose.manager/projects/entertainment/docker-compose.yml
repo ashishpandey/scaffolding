@@ -1,112 +1,26 @@
+x-host-env: &host-env
+  PUID: '99'
+  PGID: '100'
+  UMASK: '022'
+  TZ: Asia/Hong_Kong
+
 services:
-  transmission-openvpn:
-    container_name: Transmission_VPN
+  emby:
+    image: lscr.io/linuxserver/emby
+    container_name: emby
     network_mode: bridge
-    cap_add:
-      - NET_ADMIN
-    image: haugene/transmission-openvpn
+    environment:
+      <<: *host-env
     ports:
-      - '9091:9091/tcp'
+      - '8096:8096/tcp'
+      - '8920:8920/tcp'
+      - '1900:1900/udp'
+      - '7359:7359/tcp'
     volumes:
-      # config goes to appdata
-      - '/mnt/user/appdata/transmission/config/:/config:rw'
-      - '/mnt/user/appdata/transmission/openvpn:/etc/openvpn/custom:rw'
-      # data goes to transmission share
-      - '/mnt/user/transmission/data/:/data:rw'
-      # move torrents storage from home dir to under transmission share
-      - '/mnt/user/transmission/torrents/:/config/transmission-home/torrents:rw'
-    restart: always
-    environment:
-      - PGID=100
-      - PUID=99
-      - TZ=Asia/Shanghai
-      - 'OPENVPN_OPTS=--inactive 3600 --ping 10 --ping-exit 60 --mute-replay-warnings'
-      - GLOBAL_APPLY_PERMISSIONS=false
-      - HOST_CONTAINERNAME=Transmission_VPN
-      - HOST_HOSTNAME=Godaam
-      - HOST_OS=Unraid
-      - LOCAL_NETWORK=192.168.1.0/24
-      - OPENVPN_CONFIG=default
-      - OPENVPN_PASSWORD=${TORGUARD_PASSWORD}
-      - OPENVPN_PROVIDER=CUSTOM
-      - OPENVPN_USERNAME=${TORGUARD_USER}
-      - TRANSMISSION_CACHE_SIZE_MB=100
-      - TRANSMISSION_DOWNLOAD_QUEUE_SIZE=50
-      - TRANSMISSION_IDLE_SEEDING_LIMIT=10080
-      - TRANSMISSION_IDLE_SEEDING_LIMIT_ENABLED=true
-      - TRANSMISSION_PEER_LIMIT_GLOBAL=500
-      - TRANSMISSION_PEER_LIMIT_PER_TORRENT=50
-      - TRANSMISSION_PORT_FORWARDING_ENABLED=true
-      - TRANSMISSION_RATIO_LIMIT=2
-      - TRANSMISSION_RATIO_LIMIT_ENABLED=true
-      - TRANSMISSION_RPC_AUTHENTICATION_REQUIRED=false
-      - TRANSMISSION_WEB_UI=transmissionic
-      - WEBPROXY_ENABLED=false
-    dns:
-        - 8.8.8.8
-        - 1.1.1.1
+      - '/mnt/user/media/:/media:rw'
+      - '/mnt/user/video/Processed/:/videos:rw'
+      - '/mnt/user/appdata/emby:/config:rw'
     labels:
       traefik.enable: true
-      traefik.http.services.transmission.loadbalancer.server.port: '9091'
-      traefik.http.routers.transmission.rule: 'Host(`transmission-vpn.app.apandey.com`)'
-  calibre-web:
-    image: crocodilestick/calibre-web-automated:latest
-    container_name: calibre-web
-    network_mode: bridge
-    environment:
-      PUID: 99
-      PGID: 100
-      TZ: Asia/Shanghai
-    volumes:
-      - /mnt/user/appdata/calibre/web:/config
-      - /mnt/user/media/Books/Calibre:/calibre-library
-      - /mnt/user/appdata/calibre/ingest:/cwa-book-ingest
-    restart: always
-    labels:
-      traefik.enable: true
-      traefik.http.services.calibre-web.loadbalancer.server.port: '8083'
-      traefik.http.routers.calibre-web.rule: 'Host(`books.app.apandey.com`)'
-
-  calibre-downloader:
-    image: ghcr.io/calibrain/calibre-web-automated-book-downloader:latest
-    container_name: calibre-downloader
-    network_mode: bridge
-    environment:
-      PUID: 99
-      PGID: 100
-      TZ: Asia/Shanghai
-      FLASK_PORT: 8084
-      FLASK_DEBUG: false
-      CLOUDFLARE_PROXY_URL: http://cloudflare-bypass:8000
-      INGEST_DIR: /cwa-book-ingest
-      BOOK_LANGUAGE: en
-    volumes:
-      - /mnt/user/appdata/calibre/ingest:/cwa-book-ingest
-    restart: always
-    labels:
-      traefik.enable: true
-      traefik.http.services.calibre-downloader.loadbalancer.server.port: '8084'
-      traefik.http.routers.calibre-downloader.rule: 'Host(`librarian.app.apandey.com`)'
-
-  cloudflare-bypass:
-    image: ghcr.io/sarperavci/cloudflarebypassforscraping:latest
-    container_name: cloudflare-bypass
-    network_mode: bridge
-    restart: always
-
-  bazarr:
-    image: lscr.io/linuxserver/bazarr:latest
-    container_name: bazarr
-    network_mode: bridge
-    environment:
-      PUID: 99
-      PGID: 100
-      TZ: Asia/Shanghai
-    volumes:
-      - /mnt/user/appdata/bazarr/config:/config
-      - /mnt/user/media/:/media
-    restart: always
-    labels:
-      traefik.enable: true
-      traefik.http.services.bazarr.loadbalancer.server.port: '6767'
-      traefik.http.routers.bazarr.rule: 'Host(`bazarr.app.apandey.com`)'
+      traefik.http.services.emby.loadbalancer.server.port: '8096'
+    restart: unless-stopped  

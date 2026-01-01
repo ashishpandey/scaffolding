@@ -146,6 +146,18 @@
     - compose
     - compose.patch
 
+# - name: deploy common compose file
+#   copy:
+#     src: docker-compose-common.yml
+#     dest: /mnt/user/appdata/docker-compose-common.yml
+#     mode: '0555'
+#     owner: nobody
+#     group: users
+#   with_fileglob:
+#     - "files/compose-*.yml"
+#   tags:
+#     - compose
+
 - name: create compose directory structure
   file:
     path: /boot/config/plugins/compose.manager/projects/{{ item.path }}

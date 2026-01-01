@@ -14,7 +14,7 @@ providers:
     exposedByDefault: false
     useBindPortIP: true
     network: bridge
-    defaultRule: "Host(`{{ '{{ normalize .Name }}' }}.app.apandey.com`)"
+    defaultRule: "Host(`{{ '{{ normalize .ContainerName }}' }}.app.apandey.com`)"
   file:
     filename: /etc/traefik/dynamic_conf.yml
     watch: true

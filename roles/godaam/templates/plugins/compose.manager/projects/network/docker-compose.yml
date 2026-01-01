@@ -1,0 +1,79 @@
+x-host-env: &host-env
+  PUID: '99'
+  PGID: '100'
+  UMASK: '022'
+  TZ: Asia/Hong_Kong
+  
+services:
+  transmission-openvpn:
+    container_name: Transmission_VPN
+    network_mode: bridge
+    cap_add:
+      - NET_ADMIN
+    image: haugene/transmission-openvpn
+    ports:
+      - '9091:9091/tcp'
+    volumes:
+      # config goes to appdata
+      - '/mnt/user/appdata/transmission/config/:/config:rw'
+      - '/mnt/user/appdata/transmission/openvpn:/etc/openvpn/custom:rw'
+      # data goes to transmission share
+      - '/mnt/user/transmission/data/:/data:rw'
+      # move torrents storage from home dir to under transmission share
+      - '/mnt/user/transmission/torrents/:/config/transmission-home/torrents:rw'
+    restart: always
+    environment:
+      <<: *host-env
+      OPENVPN_OPTS: --inactive 3600 --ping 10 --ping-exit 60 --mute-replay-warnings
+      GLOBAL_APPLY_PERMISSIONS: false
+      LOCAL_NETWORK: 192.168.1.0/24
+      OPENVPN_CONFIG: default
+      OPENVPN_PASSWORD: ${TORGUARD_PASSWORD}
+      OPENVPN_PROVIDER: CUSTOM
+      OPENVPN_USERNAME: ${TORGUARD_USER}
+      TRANSMISSION_CACHE_SIZE_MB: 100
+      TRANSMISSION_DOWNLOAD_QUEUE_SIZE: 50
+      TRANSMISSION_IDLE_SEEDING_LIMIT: 10080
+      TRANSMISSION_IDLE_SEEDING_LIMIT_ENABLED: true
+      TRANSMISSION_PEER_LIMIT_GLOBAL: 500
+      TRANSMISSION_PEER_LIMIT_PER_TORRENT: 50
+      TRANSMISSION_PORT_FORWARDING_ENABLED: true
+      TRANSMISSION_RATIO_LIMIT: 2
+      TRANSMISSION_RATIO_LIMIT_ENABLED: true
+      TRANSMISSION_RPC_AUTHENTICATION_REQUIRED: false
+      TRANSMISSION_WEB_UI: transmissionic
+      WEBPROXY_ENABLED: false
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    labels:
+      traefik.enable: true
+      traefik.http.services.transmission.loadbalancer.server.port: '9091'
+      traefik.http.routers.transmission.rule: 'Host(`transmission-vpn.app.apandey.com`)'
+  unifi:
+    container_name: unifi-network
+    network_mode: bridge
+    image: jacobalberty/unifi:latest
+    # user: unifi
+    environment:
+      <<: *host-env
+      JVM_MAX_HEAP_SIZE: '1024M'
+      JVM_INIT_HEAP_SIZE: '1024M'
+      RUNAS_UID0: 'false'
+    ports:
+      - '8443:8443/tcp'
+      - '3478:3478/udp'
+      - '10001:10001/udp'
+      - '8080:8080/tcp'
+      - '21900:1900/udp'
+      - '8843:8843/tcp'
+      - '8880:8880/tcp'
+      - '6789:6789/tcp'
+      - '5514:5514/udp'
+    volumes:
+      - '/mnt/cache/appdata/jacobalberty-unifi:/unifi:rw'
+    labels:
+      traefik.enable: true
+      traefik.http.services.unifi-controller.loadbalancer.server.port: '8443'
+      traefik.http.services.unifi-controller.loadbalancer.server.scheme: https
+      traefik.http.routers.unifi-controller.rule: 'Host(`unifi.app.apandey.com`)'

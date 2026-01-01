@@ -1,0 +1,18 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Photo & Video
+    net.unraid.docker.managed: 'composeman'
+    net.unraid.docker.shell: '/bin/bash'
+
+services:
+  davinci-resolve-server:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8543]
+      net.unraid.docker.icon: https://img.informer.com/icons_mac/png/128/504/504506.png
+
+  photostructure:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:1787]
+      net.unraid.docker.icon: https://photostructure.com/img/logo-circle-gradient-256.png
