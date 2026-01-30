@@ -24,3 +24,54 @@ services:
       traefik.enable: true
       traefik.http.services.emby.loadbalancer.server.port: '8096'
     restart: unless-stopped  
+
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    network_mode: bridge
+    runtime: nvidia
+    environment:
+      <<: *host-env
+      NVIDIA_VISIBLE_DEVICES: GPU-6ef3c871-0136-0942-8509-60c53293b64d
+      NVIDIA_DRIVER_CAPABILITIES: all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities:
+                - gpu
+    volumes:
+      # - '/mnt/user/media/:/media:ro'
+      # - '/mnt/user/video/Processed/:/videos:ro'
+      - '/mnt/user/appdata/jellyfin/config:/config:rw'
+      - '/mnt/user/appdata/jellyfin/data:/data:rw'
+      - '/mnt/user/appdata/jellyfin/transcode:/transcode:rw'
+      - '/mnt/user/appdata/jellyfin/cache:/cache:rw'
+      - type: bind
+        source: /mnt/user/media
+        target: /media
+        read_only: true
+      - type: bind
+        source: /mnt/user/video/Processed
+        target: /videos
+        read_only: true
+    expose:
+      - 8096
+    labels:
+      traefik.enable: true
+    restart: unless-stopped
+
+  watchstate:
+    image: ghcr.io/arabcoders/watchstate:latest
+    user: "99:100"
+    container_name: watchstate
+    network_mode: bridge
+    expose: 
+      - "8080"
+    labels:
+      traefik.enable: true
+    volumes:
+      - /mnt/user/appdata/watchstate:/config:rw
+    restart: unless-stopped

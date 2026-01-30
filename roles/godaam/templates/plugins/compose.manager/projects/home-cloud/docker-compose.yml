@@ -85,7 +85,7 @@ services:
     
   nextcloud:
     container_name: nextcloud
-    image: lscr.io/linuxserver/nextcloud:32.0.3
+    image: lscr.io/linuxserver/nextcloud:32.0.5
     network_mode: bridge
     environment:
       TZ: Asia/Shanghai

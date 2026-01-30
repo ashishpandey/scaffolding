@@ -10,3 +10,15 @@ services:
       <<: *common-labels
       net.unraid.docker.webui: http://[IP]:[PORT:8096]
       net.unraid.docker.icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/emby-logo.png
+
+  jellyfin:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://jellyfin.app.apandey.com
+      net.unraid.docker.icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/jellyfin-logo.png
+
+  watchstate:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://watchstate.app.apandey.com
+      net.unraid.docker.icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/adguardhomesync-icon.png
