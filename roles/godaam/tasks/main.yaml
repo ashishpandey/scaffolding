@@ -1,68 +1,68 @@
----  
-- name: ensure scripts
-  file:
+---
+- name: Ensure scripts
+  ansible.builtin.file:
     path: /mnt/user/scripts
     state: directory
-    mode: '0777'
+    mode: "0777"
     owner: nobody
     group: users
 
-- name: copy mirror script
-  copy:
+- name: Copy mirror script
+  ansible.builtin.copy:
     src: scripts/mirror.sh
     dest: /mnt/user/scripts/mirror.sh
-    mode: '0555'
+    mode: "0555"
     owner: nobody
     group: users
 
-- name: copy rclone sync scans script
-  copy:
+- name: Copy rclone sync scans script
+  ansible.builtin.copy:
     src: scripts/rclone_sync_scans.sh
     dest: /mnt/user/scripts/rclone_sync_scans.sh
-    mode: '0555'
+    mode: "0555"
     owner: nobody
     group: users
 
-- name: copy rclone sync gdocs script
-  copy:
+- name: Copy rclone sync gdocs script
+  ansible.builtin.copy:
     src: scripts/rclone_gdocs.sh
     dest: /mnt/user/scripts/rclone_gdocs.sh
-    mode: '0555'
+    mode: "0555"
     owner: nobody
     group: users
 
-- name: copy sync script
-  copy:
+- name: Copy sync script
+  ansible.builtin.copy:
     src: scripts/sync.sh
     dest: /mnt/user/scripts/sync.sh
-    mode: '0555'
+    mode: "0555"
     owner: nobody
     group: users
 
-- name: copy zfs script
-  copy:
+- name: Copy zfs script
+  ansible.builtin.copy:
     src: scripts/zfs_prune_snapshots.sh
     dest: /mnt/user/scripts/zfs_prune_snapshots.sh
-    mode: '0555'
+    mode: "0555"
     owner: nobody
     group: users
 
-- include_tasks: plugin_file.yaml
-  vars: 
+- ansible.builtin.include_tasks: plugin_file.yaml
+  vars:
     file: plugins/dynamix.system.temp/sensors.conf
 
-- include_tasks: plugin_file.yaml
-  vars: 
+- ansible.builtin.include_tasks: plugin_file.yaml
+  vars:
     file: plugins/theme.engine/custom.css
 
-- name: install user scripts
-  include_tasks: 
+- name: Install user scripts
+  ansible.builtin.include_tasks:
     file: plugin_file.yaml
     apply:
       tags:
         - user.scripts
-  vars: 
-    file: plugins/user.scripts/scripts/{{item}}/script
+  vars:
+    file: plugins/user.scripts/scripts/{{ item }}/script
   loop:
     - backup-media
     - check-docker
@@ -73,8 +73,8 @@
   tags:
     - user.scripts
 
-- name: docker-cache app
-  import_tasks: template_dir.yaml
+- name: Docker-cache app
+  ansible.builtin.import_tasks: template_dir.yaml
   vars:
     template_src: appdata/docker-cache
     template_dest: /mnt/user/appdata
@@ -82,8 +82,8 @@
     - docker-cache
     - app
 
-- name: frigate app
-  import_tasks: template_dir.yaml
+- name: Frigate app
+  ansible.builtin.import_tasks: template_dir.yaml
   vars:
     template_src: appdata/frigate
     template_dest: /mnt/user/appdata
@@ -91,8 +91,8 @@
     - frigate
     - app
 
-- name: homepage app
-  import_tasks: template_dir.yaml
+- name: Homepage app
+  ansible.builtin.import_tasks: template_dir.yaml
   vars:
     template_src: appdata/homepage
     template_dest: /mnt/user/appdata
@@ -100,8 +100,8 @@
     - homepage
     - app
 
-- name: gatus app
-  import_tasks: template_dir.yaml
+- name: Gatus app
+  ansible.builtin.import_tasks: template_dir.yaml
   vars:
     template_src: appdata/gatus
     template_dest: /mnt/user/appdata
@@ -109,7 +109,7 @@
     - gatus
     - app
 
-- name: setup sensors
+- name: Setup sensors
   ansible.builtin.blockinfile:
     path: /boot/config/go
     marker: "######## {mark} SENSORS SETUP ########"
@@ -119,7 +119,7 @@
       modprobe coretemp
       /usr/bin/sensors -s
 
-- name: setup filesystems
+- name: Setup filesystems
   ansible.builtin.blockinfile:
     path: /boot/config/go
     marker: "######## {mark} FILESYSTEMS SETUP ########"
@@ -131,8 +131,8 @@
       echo "#Adjusting ARC memory usage (limit 16GB)"
       echo 17179869184 > /sys/module/zfs/parameters/zfs_arc_max
 
-- name: traefik config
-  import_tasks: template_dir.yaml
+- name: Traefik config
+  ansible.builtin.import_tasks: template_dir.yaml
   vars:
     template_src: appdata/traefik
     template_dest: /mnt/cache/appdata
@@ -140,8 +140,8 @@
     - traefik
     - app
 
-- name: homepage app
-  import_tasks: compose_patch.yaml
+- name: Homepage app
+  ansible.builtin.import_tasks: compose_patch.yaml
   tags:
     - compose
     - compose.patch
@@ -158,42 +158,42 @@
 #   tags:
 #     - compose
 
-- name: create compose directory structure
-  file:
+- name: Create compose directory structure
+  ansible.builtin.file:
     path: /boot/config/plugins/compose.manager/projects/{{ item.path }}
     state: directory
-    mode: '0700'
+    mode: "0700"
   with_filetree: ../templates/plugins/compose.manager/projects/
   loop_control:
-    label: '{{item.path}}'
+    label: "{{ item.path }}"
   when: item.state == 'directory'
   tags:
     - compose
 
-- name: deploy compose files
-  template:
+- name: Deploy compose files
+  ansible.builtin.template:
     src: "{{ item.src }}"
     dest: /boot/config/plugins/compose.manager/projects/{{ item.path }}
-    mode: '0600'
+    mode: "0600"
   with_filetree: ../templates/plugins/compose.manager/projects/
   loop_control:
-    label: '{{item.path}}'
+    label: "{{ item.path }}"
   when: item.state == 'file'
   tags:
     - compose
 
-- name: deploy esphome secrets
-  template:
+- name: Deploy esphome secrets
+  ansible.builtin.template:
     src: esphome/secrets.yaml
     dest: /mnt/user/appdata/esphome/config/secrets.yaml
-    mode: '0666'
+    mode: "0666"
   tags:
     - esphome
 
-- name: deploy esphome projects
-  copy:
+- name: Deploy esphome projects
+  ansible.builtin.copy:
     src: esphome/
     dest: /mnt/user/appdata/esphome/config/
-    mode: '0666'
+    mode: "0666"
   tags:
     - esphome

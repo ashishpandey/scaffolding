@@ -17,11 +17,11 @@ services:
       net.unraid.docker.webui: https://cleanuparr.app.apandey.com
       net.unraid.docker.icon: https://raw.githubusercontent.com/Cleanuparr/Cleanuparr/refs/heads/main/Logo/128.png
 
-  huntarr:
-    labels:
-      <<: *common-labels
-      net.unraid.docker.webui: https://huntarr.app.apandey.com
-      net.unraid.docker.icon: https://raw.githubusercontent.com/plexguide/Huntarr.io/refs/heads/main/frontend/static/logo/128.png
+  # huntarr:
+  #   labels:
+  #     <<: *common-labels
+  #     net.unraid.docker.webui: https://huntarr.app.apandey.com
+  #     net.unraid.docker.icon: https://raw.githubusercontent.com/plexguide/Huntarr.io/refs/heads/main/frontend/static/logo/128.png
 
   prowlarr:
     labels:

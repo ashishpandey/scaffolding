@@ -1,0 +1,56 @@
+---
+- name: Install centos8
+  ansible.builtin.debug:
+    msg: "install xfce4 and xrdp"
+
+- name: Ensure themes directory
+  ansible.builtin.file:
+    path: /home/ashish/.local/share/themes/
+    state: directory
+    owner: ashish
+    mode: '0755'
+
+- name: Install nordic polar theme
+  ansible.builtin.unarchive:
+    src: "https://github.com/EliverLara/Nordic/releases/download/v2.2.0/Nordic-Polar.tar.xz"
+    dest: /home/ashish/.local/share/themes/
+    remote_src: true
+  become: true
+  become_user: ashish
+
+- name: Install xfce packages
+  ansible.builtin.raw: dnf install -y papirus-icon-theme
+  changed_when: true
+
+- name: Install Nordic theme
+  ansible.builtin.unarchive:
+    src: "https://github.com/EliverLara/Nordic/releases/download/v2.2.0/Nordic.tar.xz"
+    dest: /home/ashish/.local/share/themes/
+    remote_src: true
+  become: true
+  become_user: ashish
+
+- name: Install WhiteSur theme
+  ansible.builtin.unarchive:
+    src: "https://github.com/vinceliuice/WhiteSur-gtk-theme/archive/refs/tags/2025-07-24.tar.gz"
+    dest: /home/ashish/.local/share/themes/
+    remote_src: true
+  become: true
+
+- name: Remove xfce themes
+  ansible.builtin.raw: dnf remove -y xfwm4-themes
+  changed_when: true
+
+- name: Configure GTK theme
+  community.general.xfconf:
+    channel: xsettings
+    property: /Net/ThemeName
+    value_type: string
+    value: Nordic
+
+- name: Configure Window Manager theme
+  community.general.xfconf:
+    channel: xfwm4
+    property: /general/theme
+    value_type: string
+    value: Nordic

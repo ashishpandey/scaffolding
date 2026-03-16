@@ -1,6 +1,6 @@
 ---
-- name: deploy compose DockerUpdate script
-  copy:
+- name: Deploy compose DockerUpdate script
+  ansible.builtin.copy:
     src: emhttp-patch/compose.manager/php/DockerUpdate.php
     dest: /usr/local/emhttp/plugins/compose.manager/php/DockerUpdate.php
-    mode: '0755'
+    mode: "0755"

@@ -42,19 +42,20 @@ services:
     labels:
       traefik.enable: true
 
-  huntarr:
-    image: huntarr/huntarr:latest
-    container_name: huntarr
-    network_mode: bridge
-    environment:
-      <<: *host-env
-    expose:
-      - 9705
-    volumes:
-      - /mnt/user/appdata/huntarr/config:/config
-    restart: unless-stopped
-    labels:
-      traefik.enable: true
+  # huntarr:
+  #   # image: huntarr/huntarr:latest
+  #   image: ghcr.io/elfhosted/newtarr:latest
+  #   container_name: huntarr
+  #   network_mode: bridge
+  #   environment:
+  #     <<: *host-env
+  #   expose:
+  #     - 9705
+  #   volumes:
+  #     - /mnt/user/appdata/huntarr/config:/config
+  #   restart: unless-stopped
+  #   labels:
+  #     traefik.enable: true
 
   prowlarr:
     image: binhex/arch-prowlarr

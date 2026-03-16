@@ -2,22 +2,21 @@
 # variables
 # - file: file
 
-- debug:
-    msg: installing /boot/config/{{file}}
-    
-- name: ensure user script dir {{ file | dirname }}
-  file:
+- ansible.builtin.debug:
+    msg: installing /boot/config/{{ file }}
+
+- name: ensure user script dir {{ file | Dirname }}
+  ansible.builtin.file:
     path: /boot/config/{{ file | dirname }}
     state: directory
-    mode: '0700'
+    mode: "0700"
     owner: root
     group: root
 
-- name: copy user script {{ file }}
-  copy:
+- name: Copy user script {{ file }}
+  ansible.builtin.copy:
     src: "{{ file }}"
-    dest: /boot/config/{{file}}
-    mode: '0600'
+    dest: /boot/config/{{ file }}
+    mode: "0600"
     owner: root
     group: root
-    

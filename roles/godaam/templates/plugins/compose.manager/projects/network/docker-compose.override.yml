@@ -15,3 +15,8 @@ services:
       <<: *common-labels
       net.unraid.docker.icon: 'https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/unifi-controller-logo.png'
       net.unraid.docker.webui: 'http://[IP]:[PORT:8443]'
+
+  timemachine:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/hernandito/unRAID-Docker-Folder-Animated-Icons---Alternate-Colors/refs/heads/master/Blue-Collection/blue-backup3.svg'
