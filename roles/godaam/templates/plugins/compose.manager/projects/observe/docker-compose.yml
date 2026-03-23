@@ -1,0 +1,126 @@
+x-host-env: &host-env
+  PUID: '99'
+  PGID: '100'
+  UMASK: '022'
+  TZ: Asia/Hong_Kong
+
+services:
+  gatus:
+    container_name: gatus
+    image: ghcr.io/twin/gatus:latest
+    networks: 
+      bond0:
+        ipv4_address: 192.168.1.52
+    environment:
+      <<: *host-env
+    labels:
+      traefik.enable: true
+      traefik.http.services.gatus.loadbalancer.server.port: '8080'
+    volumes:
+        - '/mnt/cache/appdata/gatus:/config:rw'
+
+  hddtemp:
+    container_name: HDDTemp
+    network_mode: host
+    image: drewster727/hddtemp-docker@sha256:824c90ffb2e92095770a7035932c53c723c600f7f5a961fae0b99e7d1ac1ca91
+    privileged: true
+    environment:
+      <<: *host-env
+      HDDTEMP_ARGS: -q -d -F /dev/sd*
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock:rw'
+      - '/dev:/dev:rw'
+    labels:
+        - wud.watch.digest=false
+
+  homepage:
+    container_name: home
+    network_mode: bridge
+    image: ghcr.io/gethomepage/homepage:latest
+    environment:
+      <<: *host-env
+      HOMEPAGE_ALLOWED_HOSTS: 'home.app.apandey.com'
+    expose:
+      - '3000/tcp'
+    volumes:
+      - '/mnt/user/appdata/homepage:/app/config:rw'
+      - '/var/run/docker.sock:/var/run/docker.sock:rw'
+    labels:
+      traefik.enable: true
+
+  unraid_api:
+    container_name: unraid-api
+    image: electricbrainuk/unraidapi
+    network_mode: bridge
+    environment:
+      <<: *host-env
+      MQTTBroker: hassio
+      MQTTPort: 1883
+      MQTTUser: mqtt
+      MQTTPass: ${MQTT_PASSWORD}
+      MQTTBaseTopic: homeassistant
+      KeyStorage: config
+    expose:
+      - '80/tcp'
+    volumes:
+        - '/mnt/user/appdata/Unraid-API:/app/config:rw'
+    labels:
+      traefik.enable: true    
+
+  chronograf:
+      container_name: chronograf
+      network_mode: bridge
+      image: chronograf:latest
+      environment:
+        <<: *host-env
+        CHRONOGRAF_AS_ROOT: true
+      ports:
+        - '8888:8888/tcp'
+      volumes:
+        - '/mnt/user/appdata/chronograf:/var/lib/chronograf:rw'
+      labels:
+        traefik.enable: true
+
+  grafana:
+    container_name: grafana
+    network_mode: bridge
+    image: grafana/grafana:latest
+    environment:
+      <<: *host-env
+      GF_SERVER_ROOT_URL: http://${GODAAM_IP}
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    expose:
+      - '3000/tcp'
+    volumes:
+      - '/mnt/user/appdata/grafana:/var/lib/grafana:rw'
+    labels:
+      traefik.enable: true
+
+  influxdb:
+    container_name: influxdb
+    network_mode: bridge
+    image: influxdb:1.8
+    environment:
+      <<: *host-env
+    ports:
+      - '8083:8083/tcp'
+      - '8086:8086/tcp'
+    volumes:
+      - '/mnt/tsdb/tsdata/influxdb/:/var/lib/influxdb:rw,slave'
+    labels:
+      wud.tag.include: ^1\.8$
+    restart: unless-stopped
+    
+  varken:
+    container_name: varken
+    network_mode: bridge
+    image: boerderij/varken
+    environment:
+      <<: *host-env
+    volumes:
+        - '/mnt/user/appdata/Varken:/config:rw'
+    restart: unless-stopped
+      
+networks:
+  bond0:
+    external: true

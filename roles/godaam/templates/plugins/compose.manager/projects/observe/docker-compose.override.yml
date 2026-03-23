@@ -1,0 +1,57 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Observe
+    net.unraid.docker.managed: composeman
+    net.unraid.docker.shell: /bin/bash
+
+x-tick-labels: &tick-labels
+  <<: *common-labels
+  folder.view2: TICK+G
+
+services:
+  gatus:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://gatus.app.apandey.com
+      net.unraid.docker.icon: https://gatus.io/img/logo.png
+
+  hddtemp:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://hddtemp.app.apandey.com
+      net.unraid.docker.icon: https://raw.githubusercontent.com/atribe/unRAID-docker/master/icons/hddtemp.png
+
+  homepage:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://home.app.apandey.com
+      net.unraid.docker.icon: https://i.imgur.com/XsaAwuO.png
+
+  unraid_api:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: https://unraid-api.app.apandey.com
+      net.unraid.docker.icon: https://raw.githubusercontent.com/ElectricBrainUK/UnraidAPI/master/static/icon.png
+
+  chronograf:
+    labels:
+      <<: *tick-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8888]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/Data-Monkey/docker-templates/master/Data-Monkey/img/chronograf.png
+
+  grafana:
+    labels:
+      <<: *tick-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:3000]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/atribe/unRAID-docker/master/icons/grafana.png
+
+  influxdb:
+    labels:
+      <<: *tick-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8083]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/simonsickle/unraid-templates/main/influxdb1/logo.png
+
+  varken:
+    labels:
+      <<: *tick-labels
+      net.unraid.docker.icon: https://raw.githubusercontent.com/benderstwin/docker-templates/master/images/varken.png

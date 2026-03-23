@@ -1,0 +1,89 @@
+x-host-env: &host-env
+  PUID: '99'
+  PGID: '100'
+  UMASK: '022'
+  TZ: Asia/Hong_Kong
+  
+services:
+  docker-cache:
+    container_name: docker-cache
+    image: registry:latest
+    network_mode: bridge
+    environment:
+      <<: *host-env
+      PHP_TZ: Asia/Hong_Kong
+      OTEL_TRACES_EXPORTER: none
+    volumes:
+      - '/mnt/tsdb/tsdata/docker-cache:/var/lib/registry:rw'
+      - '/mnt/cache/appdata/docker-cache:/etc/docker/registry:ro'
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.routers.docker-cache.rule: 'Host(`docker-cache.app.apandey.com`)'
+      traefik.http.services.docker-cache.loadbalancer.server.port: '5000'
+
+  docker-cache-browser:
+    container_name: docker-cache-browser
+    image: klausmeyer/docker-registry-browser:latest
+    network_mode: bridge
+    environment:
+      <<: *host-env
+      SCRIPT_NAME: /browse
+      RAILS_RELATIVE_URL_ROOT: /browse
+      PUBLIC_REGISTRY_URL: https://docker-cache.app.apandey.com
+      DOCKER_REGISTRY_URL: http://docker-cache:5000
+      SECRET_KEY_BASE: ${DOCKER_BROWSER_KEY}
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
+      traefik.http.routers.docker-cache-browser.rule: 'Host(`docker-cache.app.apandey.com`) && PathPrefix(`/browse`)'
+      traefik.http.services.docker-cache-browser.loadbalancer.server.port: '8080'
+      traefik.http.middlewares.docker-browser-cache.stripprefix.prefixes: /browse
+      traefik.http.routers.docker-cache-browser.middlewares: docker-browser-cache@docker
+
+  unraid-docker-webui:
+    container_name: Docker-WebUI
+    network_mode: bridge
+    image: olprog/unraid-docker-webui
+    privileged: true
+    environment:
+      <<: *host-env
+      CIRCLE: yes
+      HOST: ''
+      UNRAID_IP: ${GODAAM_IP}
+      TITLE: Docker WebUI
+      PORT: 8080
+    ports:
+      - '1111:8080/tcp'
+    volumes:
+      - '/mnt/user/appdata/Docker-WebUI:/config:rw'
+      - '/var/local/emhttp/plugins/dynamix.docker.manager:/data:ro'
+    labels:
+      wud.watch.digest: false
+
+  docker-registry:
+    container_name: DockerRegistry
+    network_mode: bridge
+    image: registry:latest
+    environment:
+      <<: *host-env
+    ports:
+      - '5000:5000/tcp'
+    volumes:
+      - '/mnt/user/appdata/registry:/var/lib/registry:rw'
+
+  docker-registry-browser:
+    container_name: DockerRegistryBrowser
+    network_mode: bridge
+    image: klausmeyer/docker-registry-browser  
+    environment:
+      <<: *host-env
+      DOCKER_REGISTRY_URL: http://${GODAAM_IP}:5000'
+      PUBLIC_REGISTRY_URL: docker-registry.${APP_DOMAIN}
+      SECRET_KEY_BASE: ${DRB_SECRET_KEY}
+    ports:
+      - '8075:8080/tcp'      
+
+networks:
+  bond0:
+    external: true

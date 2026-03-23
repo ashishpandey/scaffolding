@@ -1,0 +1,34 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Container
+    net.unraid.docker.managed: 'composeman'
+    net.unraid.docker.shell: '/bin/bash'
+
+services:
+  docker-cache:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: 'http://[IP]:[PORT:5000]/'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/juusujanar/unraid-templates/refs/heads/master/img/DockerRegistry-logo.png'
+  docker-cache-browser:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: 'http://[IP]:[PORT:8080]'
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/juusujanar/unraid-templates/refs/heads/master/img/DockerRegistry-logo.png'
+
+  unraid-docker-webui:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8080]
+      net.unraid.docker.icon: https://raw.githubusercontent.com/Olprog59/unraid-templates/main/docker-webui/docker-webui.png
+
+  docker-registry:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: https://github.com/juusujanar/unraid-templates/raw/master/img/DockerRegistry-logo.png
+
+  docker-registry-browser:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.webui: http://[IP]:[PORT:8075]/
+      net.unraid.docker.icon: https://raw.githubusercontent.com/docker-library/docs/b09c592af0d6061629e02e4f674d22848f8236e8/registry/logo.png

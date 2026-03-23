@@ -47,11 +47,13 @@
     owner: nobody
     group: users
 
-- ansible.builtin.include_tasks: plugin_file.yaml
+- name: Add sensors config
+  ansible.builtin.include_tasks: plugin_file.yaml
   vars:
     file: plugins/dynamix.system.temp/sensors.conf
 
-- ansible.builtin.include_tasks: plugin_file.yaml
+- name: Add theme config
+  ansible.builtin.include_tasks: plugin_file.yaml
   vars:
     file: plugins/theme.engine/custom.css
 
@@ -163,7 +165,7 @@
     path: /boot/config/plugins/compose.manager/projects/{{ item.path }}
     state: directory
     mode: "0700"
-  with_filetree: ../templates/plugins/compose.manager/projects/
+  with_community.general.filetree: ../templates/plugins/compose.manager/projects/
   loop_control:
     label: "{{ item.path }}"
   when: item.state == 'directory'
@@ -175,7 +177,7 @@
     src: "{{ item.src }}"
     dest: /boot/config/plugins/compose.manager/projects/{{ item.path }}
     mode: "0600"
-  with_filetree: ../templates/plugins/compose.manager/projects/
+  with_community.general.filetree: ../templates/plugins/compose.manager/projects/
   loop_control:
     label: "{{ item.path }}"
   when: item.state == 'file'

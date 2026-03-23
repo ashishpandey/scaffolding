@@ -1,11 +1,13 @@
 ---
-- hosts: centos8
+- name: Centos8 VM
+  hosts: centos8
   gather_facts: true
   roles:
     - role: xfce
       tags: xfce
 
-- hosts: godaam
+- name: Godaam
+  hosts: godaam
   gather_facts: false
   roles:
     - role: godaam

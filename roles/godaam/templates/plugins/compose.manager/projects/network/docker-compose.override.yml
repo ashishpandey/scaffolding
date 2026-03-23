@@ -19,4 +19,22 @@ services:
   timemachine:
     labels:
       <<: *common-labels
-      net.unraid.docker.icon: 'https://raw.githubusercontent.com/hernandito/unRAID-Docker-Folder-Animated-Icons---Alternate-Colors/refs/heads/master/Blue-Collection/blue-backup3.svg'
+      net.unraid.docker.icon: 'https://avatars.githubusercontent.com/u/66172718?s=48&v=4&.png'
+
+  pihole:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: 'https://i.imgur.com/OWkNcEn.png'
+      net.unraid.docker.webui: 'https://pihole.app.apandey.com/admin'
+
+  speedtest:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/speedtest-tracker-logo.png'
+      net.unraid.docker.webui: 'https://speedtest.app.apandey.com'
+
+  traefik:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/traefik-logo.png'
+      net.unraid.docker.webui: 'http://[IP]:81/dashboard/'

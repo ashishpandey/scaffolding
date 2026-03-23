@@ -2,10 +2,11 @@
 # variables
 # - file: file
 
-- ansible.builtin.debug:
+- name: Show message
+  ansible.builtin.debug:
     msg: installing /boot/config/{{ file }}
 
-- name: ensure user script dir {{ file | Dirname }}
+- name: Ensure user script dir {{ file | dirname }} exists
   ansible.builtin.file:
     path: /boot/config/{{ file | dirname }}
     state: directory
