@@ -17,15 +17,3 @@ services:
     volumes:
       - '/mnt/user/appdata/cups/:/etc/cups/:rw'
     restart: unless-stopped
-    
-  flaresolverr:
-    image: flaresolverr/flaresolverr
-    container_name: flaresolverr
-    network_mode: bridge
-    environment:
-      <<: *host-env
-      LOG_LEVEL: info
-    ports:
-      - '8191:8191/tcp'
-    restart: unless-stopped
-
