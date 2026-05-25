@@ -1,0 +1,51 @@
+{
+    "distSpecVersion": "1.1.0",
+    "storage": {
+        "rootDirectory": "/var/lib/zot",
+        "dedupe": true,
+        "gc": true,
+        "gcDelay": "1h",
+        "gcInterval": "24h"
+    },
+    "http": {
+        "address": "0.0.0.0",
+        "port": "5000",
+        "compat": [
+            "docker2s2"
+        ]
+    },
+    "log": {
+        "level": "info"
+    },
+    "extensions": {
+        "sync": {
+            "credentialsFile": "/etc/zot/sync-auth.json",
+            "registries": [
+                {
+                    "urls": [
+                        "https://docker.io/library"
+                    ],
+                    "onDemand": true,
+                    "tlsVerify": true,
+                    "maxRetries": 3,
+                    "retryDelay": "5m",
+                    "onlySigned": false,
+                    "preserveDigest": true
+                }
+            ]
+        },
+        "scrub": {
+            "enable": true,
+            "interval": "24h"
+        },
+        "search": {
+            "enable": true,
+            "cve": {
+                "updateInterval": "8h"
+            }
+        },
+        "ui": {
+            "enable": true
+        }
+    }
+}

@@ -93,7 +93,23 @@ services:
       PUBLIC_REGISTRY_URL: docker-registry.${APP_DOMAIN}
       SECRET_KEY_BASE: ${DRB_SECRET_KEY}
     ports:
-      - '8075:8080/tcp'      
+      - '8075:8080/tcp'
+
+  zot:
+    image: ghcr.io/project-zot/zot-linux-amd64:latest
+    container_name: zot
+    networks:
+      - app_bridge
+    expose:
+      - 5000/tcp
+    environment:
+      <<: *host-env
+    volumes:
+      - '/mnt/tsdb/tsdata/zot-cache:/var/lib/zot:rw'
+      - '/mnt/cache/appdata/zot:/etc/zot:ro'
+    restart: unless-stopped
+    labels:
+      traefik.enable: true
 
 networks:
   bond0:
