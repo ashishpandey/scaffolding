@@ -7,7 +7,8 @@ x-host-env: &host-env
 services:
   transmission-openvpn:
     container_name: Transmission_VPN
-    network_mode: bridge
+    networks:
+      - app_bridge
     cap_add:
       - NET_ADMIN
     image: haugene/transmission-openvpn
@@ -51,8 +52,9 @@ services:
       traefik.http.services.transmission.loadbalancer.server.port: '9091'
       traefik.http.routers.transmission.rule: 'Host(`transmission-vpn.app.apandey.com`)'
   unifi:
-    container_name: unifi-network
-    network_mode: bridge
+    container_name: unifi
+    networks:
+      - app_bridge
     image: jacobalberty/unifi:latest
     # user: unifi
     environment:
@@ -75,8 +77,8 @@ services:
     labels:
       traefik.enable: true
       traefik.http.services.unifi-controller.loadbalancer.server.port: '8443'
-      traefik.http.services.unifi-controller.loadbalancer.server.scheme: https
-      traefik.http.routers.unifi-controller.rule: 'Host(`unifi.app.apandey.com`)'
+      # traefik.http.services.unifi-controller.loadbalancer.server.scheme: https
+      # traefik.http.routers.unifi-controller.rule: 'Host(`unifi.app.apandey.com`)'
 
   timemachine:
     container_name: GodaamMachine
@@ -126,7 +128,8 @@ services:
   speedtest:
     image: openspeedtest/latest
     container_name: speedtest
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
     expose:
@@ -137,7 +140,9 @@ services:
   traefik:
     container_name: traefik
     image: traefik
-    network_mode: bridge
+    # network_mode: bridge
+    networks:
+      - app_bridge
     ports:
       - '80:80/tcp'
       - '81:8080/tcp'
@@ -148,3 +153,7 @@ services:
 networks:
   bond0:
     external: true
+  app_bridge:
+    name: app_bridge
+    external: true
+  

@@ -35,7 +35,8 @@ services:
 
   homepage:
     container_name: home
-    network_mode: bridge
+    networks:
+      - app_bridge
     image: ghcr.io/gethomepage/homepage:latest
     environment:
       <<: *host-env
@@ -51,7 +52,8 @@ services:
   unraid_api:
     container_name: unraid-api
     image: electricbrainuk/unraidapi
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
       MQTTBroker: hassio
@@ -69,7 +71,8 @@ services:
 
   chronograf:
       container_name: chronograf
-      network_mode: bridge
+      networks:
+        - app_bridge
       image: chronograf:latest
       environment:
         <<: *host-env
@@ -83,7 +86,8 @@ services:
 
   grafana:
     container_name: grafana
-    network_mode: bridge
+    networks:
+      - app_bridge
     image: grafana/grafana:latest
     environment:
       <<: *host-env
@@ -123,4 +127,7 @@ services:
       
 networks:
   bond0:
+    external: true
+  app_bridge:
+    name: app_bridge
     external: true

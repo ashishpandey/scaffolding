@@ -8,24 +8,32 @@ services:
   docker-cache:
     container_name: docker-cache
     image: registry:latest
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
       PHP_TZ: Asia/Hong_Kong
+      OTEL_SDK_DISABLED: 'true'
+      OTEL_LOGS_EXPORTER: none
+      OTEL_METRICS_EXPORTER: none
       OTEL_TRACES_EXPORTER: none
+    expose:
+      - '5000/tcp'
     volumes:
       - '/mnt/tsdb/tsdata/docker-cache:/var/lib/registry:rw'
       - '/mnt/cache/appdata/docker-cache:/etc/docker/registry:ro'
     restart: unless-stopped
     labels:
       traefik.enable: true
-      traefik.http.routers.docker-cache.rule: 'Host(`docker-cache.app.apandey.com`)'
-      traefik.http.services.docker-cache.loadbalancer.server.port: '5000'
+      traefik.docker.network: app_bridge
+      # traefik.http.routers.docker-cache.rule: 'Host(`docker-cache.app.apandey.com`)'
+      # traefik.http.services.docker-cache.loadbalancer.server.port: '5000'
 
   docker-cache-browser:
     container_name: docker-cache-browser
     image: klausmeyer/docker-registry-browser:latest
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
       SCRIPT_NAME: /browse
@@ -33,13 +41,16 @@ services:
       PUBLIC_REGISTRY_URL: https://docker-cache.app.apandey.com
       DOCKER_REGISTRY_URL: http://docker-cache:5000
       SECRET_KEY_BASE: ${DOCKER_BROWSER_KEY}
+    expose:
+      - 8080/tcp
     restart: unless-stopped
     labels:
       traefik.enable: true
+      # traefik.docker.network: app_bridge
       traefik.http.routers.docker-cache-browser.rule: 'Host(`docker-cache.app.apandey.com`) && PathPrefix(`/browse`)'
-      traefik.http.services.docker-cache-browser.loadbalancer.server.port: '8080'
-      traefik.http.middlewares.docker-browser-cache.stripprefix.prefixes: /browse
-      traefik.http.routers.docker-cache-browser.middlewares: docker-browser-cache@docker
+      # traefik.http.services.docker-cache-browser.loadbalancer.server.port: '8080'
+      traefik.http.routers.docker-cache-browser.middlewares: docker-cache-browser@docker
+      traefik.http.middlewares.docker-cache-browser.stripprefix.prefixes: /browse
 
   unraid-docker-webui:
     container_name: Docker-WebUI
@@ -86,4 +97,7 @@ services:
 
 networks:
   bond0:
+    external: true
+  app_bridge:
+    name: app_bridge
     external: true

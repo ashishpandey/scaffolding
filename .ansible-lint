@@ -1,0 +1,16 @@
+---
+exclude_paths:
+  - .ansible/
+  - roles/godaam/files/esphome/
+  - portainer.yaml
+  - roles/influxdb/tasks/main.yaml
+  - roles/pigpio/tasks/main.yml
+  - roles/xfce/tasks/main.yml
+skip_list:
+  - role-name
+  - var-naming[no-role-prefix]
+  - risky-file-permissions
+  - name[template]
+  - name[missing]
+  - jinja[spacing]
+  - schema[moves]

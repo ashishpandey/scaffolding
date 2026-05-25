@@ -14,7 +14,7 @@
     group: users
     owner: nobody
     mode: "0777"
-  with_community.general.filetree: "{{ role_path }}/templates/{{ template_src }}"
+  with_filetree: "{{ role_path }}/templates/{{ template_src }}"
   when: item.state == 'directory'
 
 - name: Ensure files are populated from templates
@@ -24,5 +24,5 @@
     group: users
     owner: nobody
     mode: "0666"
-  with_community.general.filetree: "{{ role_path }}/templates/{{ template_src }}"
+  with_filetree: "{{ role_path }}/templates/{{ template_src }}"
   when: item.state == 'file'

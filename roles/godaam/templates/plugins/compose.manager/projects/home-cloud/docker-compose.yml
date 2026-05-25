@@ -1,27 +1,9 @@
 services:
-
-  # traefik:
-  #   container_name: traefik
-  #   image: traefik:latest
-  #   network_mode: bridge
-  #   environment:
-  #       - TZ=Asia/Shanghai
-  #   ports:
-  #     - '12443:443/tcp'
-  #     - '80:80/tcp'
-  #     - '81:8080/tcp'
-  #   volumes:
-  #     - '/mnt/cache/appdata/traefik:/etc/traefik:rw'
-  #     - '/var/run/docker.sock:/var/run/docker.sock:ro'
-  #   labels:
-  #     traefik.enable: true
-  #     traefik.http.routers.api.rule: Host(`app.apandey.com`)
-  #     traefik.http.routers.api.entryPoints: http
-  #     traefik.http.routers.api.service: api@internal
   wud:
     container_name: wud
     image: getwud/wud:latest
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       TZ: Asia/Hong_Kong
       PGID: '100'
@@ -39,18 +21,21 @@ services:
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
       - '/mnt/cache/appdata/wud:/store'
+    expose:
+      - '3000/tcp'
     labels:
       traefik.enable: true
-      traefik.http.services.wud.loadbalancer.server.port: '3000'
-      traefik.http.routers.wud.rule: 'Host(`wud.app.apandey.com`)'
+      # traefik.http.services.wud.loadbalancer.server.port: '3000'
+      # traefik.http.routers.wud.rule: 'Host(`wud.app.apandey.com`)'
 
   actual_server:
     container_name: actual
     hostname: actual-server
-    network_mode: bridge
+    networks:
+      - app_bridge
     image: actualbudget/actual-server:latest
-    ports:
-      - '5006:5006'
+    expose:
+      - '5006/tcp'
     environment:
       - ACTUAL_PORT=5006
       - ACTUAL_UPLOAD_FILE_SYNC_SIZE_LIMIT_MB=20
@@ -62,8 +47,8 @@ services:
     restart: always
     labels:
       traefik.enable: true
-      traefik.http.services.actual-server.loadbalancer.server.port: '5006'
-      traefik.http.routers.actual-server.rule: 'Host(`actual.app.apandey.com`)'
+      # traefik.http.services.actual-server.loadbalancer.server.port: '5006'
+      # traefik.http.routers.actual-server.rule: 'Host(`actual.app.apandey.com`)'
 
   nextcloud-db:
     container_name: nextcloud-db
@@ -85,7 +70,7 @@ services:
     
   nextcloud:
     container_name: nextcloud
-    image: lscr.io/linuxserver/nextcloud:33.0.0
+    image: lscr.io/linuxserver/nextcloud:33.0.3
     network_mode: bridge
     environment:
       TZ: Asia/Shanghai
@@ -103,30 +88,34 @@ services:
   paperless-redis:
     container_name: paperless_redis
     image: redis
-    network_mode: bridge
+    networks: 
+      - app_bridge
     environment:
       TZ: Asia/Shanghai
-    ports:
-      - '6379:6379/tcp'
+    expose:
+      - '6379/tcp'
 
   paperless-ngx:
-    container_name: paperless-ngx
-    image: ghcr.io/paperless-ngx/paperless-ngx
-    network_mode: bridge
+    container_name: paperless
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    networks:
+      - app_bridge
     environment:
       TZ: Asia/Shanghai
-      PAPERLESS_REDIS: redis://192.168.1.215:6379
+      PAPERLESS_REDIS: redis://paperless_redis:6379
       PAPERLESS_OCR_LANGUAGE: eng
       PAPERLESS_OCR_LANGUAGES: ""
+      PAPERLESS_OCR_OUTPUT_TYPE: pdf
       PAPERLESS_FILENAME_FORMAT: "{created}-{correspondent}-{title}"
       PAPERLESS_TIME_ZONE: Asia/Hong_Kong
       PAPERLESS_IGNORE_DATES: ""
       PAPERLESS_CONSUMER_POLLING: "0"
       PAPERLESS_SECRET_KEY: "${PAPERLESS_SECRET_KEY}"
+      PAPERLESS_URL: https://paperless.app.apandey.com
       USERMAP_UID: "99"
       USERMAP_GID: "100"
-    ports:
-      - '8000:8000/tcp'
+    expose:
+      - '8000/tcp'
     volumes:
       - '/mnt/user/appdata/paperless-ngx/data:/usr/src/paperless/data:rw'
       - '/mnt/user/appdata/paperless-ngx/media:/usr/src/paperless/media:rw'
@@ -134,9 +123,9 @@ services:
       - '/mnt/user/appdata/paperless-ngx/export:/usr/src/paperless/export:rw'
     labels:
       traefik.enable: true
-      traefik.http.services.endurain.loadbalancer.server.port: '8000'
-      traefik.http.routers.endurain.rule: 'Host(`paperless.app.apandey.com`)'     
-      
+      # traefik.http.services.paperless.loadbalancer.server.port: '8000'
+      # traefik.http.routers.paperless.rule: 'Host(`paperless.app.apandey.com`)'     
+
   vaultwarden:
     container_name: vaultwarden
     image: vaultwarden/server
@@ -155,7 +144,7 @@ services:
 
   endurain:
     container_name: endurain-app
-    image: ghcr.io/joaovitoriasilva/endurain:latest
+    image: ghcr.io/endurain-project/endurain:latest
     # network_mode: bridge
     networks: 
       - app_bridge
@@ -184,16 +173,16 @@ services:
       #SMTP_PASSWORD=your-app-password
       #SMTP_SECURE=true
       #SMTP_SECURE_TYPE=starttls
-    ports:
-      - 38080:8080
+    expose:
+      - 8080/tcp
     depends_on:
       endurain-db:
         condition: service_healthy
     labels:
       traefik.enable: true
-      traefik.http.services.endurain.loadbalancer.server.port: '8080'
-      traefik.http.routers.endurain.rule: 'Host(`endurain.app.apandey.com`)'
-      trafeik.docker.network: app_bridge
+      # traefik.http.services.endurain.loadbalancer.server.port: '8080'
+      # traefik.http.routers.endurain.rule: 'Host(`endurain.app.apandey.com`)'
+      # traefik.docker.network: app_bridge
 
   endurain-db:
     image: docker.io/postgres:17
@@ -243,7 +232,8 @@ services:
 
   frigate:
     container_name: frigate
-    network_mode: bridge
+    networks:
+      - app_bridge
     restart: unless-stopped
     image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
     environment:
@@ -281,4 +271,3 @@ networks:
   app_bridge:
     name: app_bridge
     external: true
-      

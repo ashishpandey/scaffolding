@@ -52,7 +52,8 @@ services:
   calibre-web:
     image: crocodilestick/calibre-web-automated:latest
     container_name: calibre-web
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
     volumes:
@@ -68,7 +69,8 @@ services:
   calibre-downloader:
     image: ghcr.io/calibrain/calibre-web-automated-book-downloader:latest
     container_name: calibre-downloader
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
       FLASK_PORT: 8084
@@ -91,3 +93,8 @@ services:
     environment:
       <<: *host-env
     restart: unless-stopped
+
+networks:
+  app_bridge:
+    name: app_bridge
+    external: true

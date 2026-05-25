@@ -8,7 +8,7 @@
     path: /home/ashish/.local/share/themes/
     state: directory
     owner: ashish
-    mode: '0755'
+    mode: "0755"
 
 - name: Install nordic polar theme
   ansible.builtin.unarchive:

@@ -8,7 +8,8 @@ services:
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
     container_name: bazarr
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       PUID: 99
       PGID: 100
@@ -25,11 +26,12 @@ services:
   cleanuparr:
     image: ghcr.io/cleanuparr/cleanuparr:latest
     container_name: cleanuparr
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
     expose:
-      - 11011
+      - 11011/tcp
     volumes:
       - /mnt/user/appdata/cleanuparr:/config
     restart: unless-stopped
@@ -60,42 +62,61 @@ services:
   prowlarr:
     image: binhex/arch-prowlarr
     container_name: prowlarr
-    network_mode: bridge
+    # network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
-    ports:
-      - '9696:9696/tcp'
+    expose:
+      - '9696/tcp'
     volumes:
       - '/mnt/cache/appdata/binhex-prowlarr:/config:rw'
     restart: unless-stopped
+    labels:
+      traefik.enable: true
 
   radarr:
     image: binhex/arch-radarr
     container_name: radarr
-    network_mode: bridge
+    # network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
-    ports:
-      - '7878:7878/tcp'
+    expose:
+      - '7878/tcp'
     volumes:
       - '/mnt/cache/appdata/binhex-radarr/:/data:rw'
       - '/mnt/user/media/:/media:rw'
       - '/mnt/user/transmission/:/transmission/:rw'
       - '/mnt/user/appdata/binhex-radarr:/config:rw'
     restart: unless-stopped
+    labels:
+      traefik.enable: true
       
   sonarr:
     image: binhex/arch-sonarr
     container_name: sonarr
-    network_mode: bridge
+    # network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
-    ports:
-      - '8989:8989/tcp'
-      - '9897:9897/tcp'
+    # ports:
+    #   - '8989:8989/tcp'
+    #   - '9897:9897/tcp'
+    expose:
+      - '8989/tcp'
     volumes:
       - '/mnt/user/appdata/binhex-sonarr/:/data:rw'
       - '/mnt/user/media/:/media:rw'
       - '/mnt/user/transmission/:/transmission:rw'
       - '/mnt/user/appdata/binhex-sonarr:/config:rw'
     restart: unless-stopped
+    labels:
+      traefik.enable: true
+
+networks:
+  app_bridge:
+    name: app_bridge
+    external: true

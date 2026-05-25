@@ -1,3 +1,4 @@
+---
 services:
   base-service:
     restart: unless-stopped
@@ -5,8 +6,8 @@ services:
       - app_bridge
     environment:
       TZ: Asia/Hong_Kong
-      PUID: '99'
-      PGID: '100'
-      UMASK: '022'
+      PUID: "99"
+      PGID: "100"
+      UMASK: "022"
     labels:
       net.unraid.docker.managed: composeman

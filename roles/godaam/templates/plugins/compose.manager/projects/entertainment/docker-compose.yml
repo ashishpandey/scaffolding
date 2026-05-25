@@ -8,7 +8,8 @@ services:
   emby:
     image: lscr.io/linuxserver/emby
     container_name: emby
-    network_mode: bridge
+    networks:
+      - app_bridge
     environment:
       <<: *host-env
     ports:
@@ -23,12 +24,16 @@ services:
     labels:
       traefik.enable: true
       traefik.http.services.emby.loadbalancer.server.port: '8096'
-    restart: unless-stopped  
+      traefik.http.middlewares.emby-headers.headers.customrequestheaders.X-Forwarded-Proto: https
+      traefik.http.middlewares.emby-headers.headers.customrequestheaders.X-Forwarded-For: '%{X-Forwarded-For}i'
+      traefik.http.routers.emby.middlewares: emby-headers@docker
+    restart: unless-stopped
 
   jellyfin:
     image: lscr.io/linuxserver/jellyfin:latest
     container_name: jellyfin
-    network_mode: bridge
+    networks:
+      - app_bridge
     runtime: nvidia
     environment:
       <<: *host-env
@@ -67,7 +72,8 @@ services:
     image: ghcr.io/arabcoders/watchstate:latest
     user: "99:100"
     container_name: watchstate
-    network_mode: bridge
+    networks:
+      - app_bridge
     expose: 
       - "8080"
     labels:
@@ -75,3 +81,8 @@ services:
     volumes:
       - /mnt/user/appdata/watchstate:/config:rw
     restart: unless-stopped
+
+networks:
+  app_bridge:
+    name: app_bridge
+    external: true

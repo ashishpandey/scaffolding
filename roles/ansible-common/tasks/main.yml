@@ -1,15 +1,17 @@
 ---
-- name: build essentials
-  apt:
+- name: Build essentials
+  ansible.builtin.apt:
     name:
       - build-essential
       - python-setuptools
       - python-pip
       - monit
     state: present
-  become: yes
+  become: true
 
-- name: create common dirs
-  file: path={{ prefix }}/{{ item }} state=directory
+- name: Create common dirs
+  ansible.builtin.file:
+    path: "{{ prefix }}/{{ item }}"
+    state: directory
   with_items:
     - src

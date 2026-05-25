@@ -1,20 +1,20 @@
 ---
-- name: ensure scaffold
-  file:
+- name: Ensure scaffold
+  ansible.builtin.file:
     path: /volume1/share/scaffold/bin
     state: directory
   loop:
     - /volume1/share/scaffold/bin
     - /volume1/share/scaffold/log
 
-- name: copy batch script
-  template:
+- name: Copy batch script
+  ansible.builtin.template:
     src: batch_image_resize.sh
     dest: /volume1/share/scaffold/bin/batch_image_resize.sh
-    mode: 0755
+    mode: "0755"
 
-- name: copy backup script
-  template:
+- name: Copy backup script
+  ansible.builtin.template:
     src: backup_volume2.sh
     dest: /volume1/share/scaffold/bin/backup_volume2.sh
-    mode: 0755
+    mode: "0755"
