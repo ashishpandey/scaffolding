@@ -12,12 +12,14 @@ services:
       - /etc/localtime:/etc/localtime:ro
     restart: always
     environment:
-      - USERNAME=espadmin
-      - PASSWORD=${ESPHOME_PASSWORD}
+      # - USERNAME=espadmin
+      # - PASSWORD=${ESPHOME_PASSWORD}
+      ESPHOME_DASHBOARD_USE_PING: true
+      ESPHOME_TRUSTED_DOMAINS: esphome.app.apandey.com,192.168.1.215
+      LOG_LEVEL: debug
     labels:
       traefik.enable: true
       traefik.http.services.esphome.loadbalancer.server.port: '6052'
-      # traefik.http.services.esphome.loadbalancer.server.scheme: https
       traefik.http.routers.esphome.rule: 'Host(`esphome.app.apandey.com`)'
 
   mosquitto:

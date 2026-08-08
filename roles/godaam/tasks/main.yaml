@@ -142,11 +142,11 @@
     - traefik
     - app
 
-- name: Homepage app
-  ansible.builtin.import_tasks: compose_patch.yaml
-  tags:
-    - compose
-    - compose.patch
+# - name: Homepage app
+#   ansible.builtin.import_tasks: compose_patch.yaml
+#   tags:
+#     - compose
+#     - compose.patch
 
 # - name: deploy common compose file
 #   copy:

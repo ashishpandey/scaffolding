@@ -65,12 +65,21 @@ services:
       UMASK: '022'
     ports:
       - '3306:3306/tcp'
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "-p$$MYSQL_ROOT_PASSWORD"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
     volumes:
       - '/mnt/user/appdata/mariadb:/config:rw'
     
   nextcloud:
     container_name: nextcloud
-    image: lscr.io/linuxserver/nextcloud:33.0.3
+    image: lscr.io/linuxserver/nextcloud:34.0.2
+    depends_on:
+      nextcloud-db:
+        condition: service_healthy
     network_mode: bridge
     environment:
       TZ: Asia/Shanghai
@@ -166,6 +175,7 @@ services:
       FERNET_KEY: ${ENDURAIN_FERNET_KEY}
       ENDURAIN_HOST: https://endurain.app.apandey.com
       BEHIND_PROXY: true
+      TRUSTED_PROXIES: 192.168.1.1,traefik
       # Email configuration (for password reset functionality)
       #SMTP_HOST=smtp.protonmail.ch
       #SMTP_PORT=587
@@ -267,7 +277,37 @@ services:
       traefik.http.services.frigate.loadbalancer.server.port: '8971'
       traefik.http.routers.frigate.rule: 'Host(`frigate.app.apandey.com`)'
 
+  bambuddy:
+    image: ghcr.io/maziggy/bambuddy:latest
+    container_name: bambuddy
+    # Allow binding to privileged ports (322, 990) as non-root user — required
+    # for FTPS in every VP mode and for the RTSPS camera proxy in proxy mode +
+    # non-proxy modes that have a target printer configured. Without this, the
+    # FTP and RTSP listeners silently fail.
+    cap_add:
+      - NET_BIND_SERVICE
+    networks:
+      bond0:
+        ipv4_address: 192.168.1.56
+      app_bridge:
+    volumes:
+      - /mnt/user/appdata/bambuddy/data:/app/data
+      - /mnt/user/appdata/bambuddy/logs:/app/logs
+    environment:
+      TZ: Asia/Hong_Kong
+      PGID: '100'
+      PUID: '99'
+      PORT: 8000
+    restart: unless-stopped
+    stop_grace_period: 30s
+    labels:
+      traefik.enable: true
+      traefik.http.services.bambuddy.loadbalancer.server.port: '8000'
+      traefik.docker.network: bond0
+
 networks:
+  bond0:
+    external: true
   app_bridge:
     name: app_bridge
     external: true
