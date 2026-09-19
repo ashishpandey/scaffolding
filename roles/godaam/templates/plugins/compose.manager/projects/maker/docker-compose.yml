@@ -1,0 +1,65 @@
+x-host-env: &host-env
+  PUID: '99'
+  PGID: '100'
+  UMASK: '022'
+  TZ: Asia/Hong_Kong
+
+services:
+
+  bambuddy:
+    image: ghcr.io/maziggy/bambuddy:latest
+    container_name: bambuddy
+    # Allow binding to privileged ports (322, 990) as non-root user — required
+    # for FTPS in every VP mode and for the RTSPS camera proxy in proxy mode +
+    # non-proxy modes that have a target printer configured. Without this, the
+    # FTP and RTSP listeners silently fail.
+    cap_add:
+      - NET_BIND_SERVICE
+    networks:
+      bond0:
+        ipv4_address: 192.168.1.56
+      # app_bridge:
+    volumes:
+      - /mnt/user/appdata/bambuddy/data:/app/data
+      - /mnt/user/appdata/bambuddy/logs:/app/logs
+    environment:
+      <<: *host-env
+      PORT: 8000
+    ports:
+      - "8000:8000"   # Web UI
+      - "8883:8883"   # MQTT Secure (Crucial for Fetching K-Profiles)
+      - "990:990"     # FTPS (For profile synchronization)
+    restart: unless-stopped
+    stop_grace_period: 30s
+    labels:
+      traefik.enable: true
+      traefik.http.services.bambuddy.loadbalancer.server.port: '8000'
+      traefik.docker.network: bond0
+
+  bambu-studio-api:
+    image: ghcr.io/maziggy/bambu-studio-api:latest
+    container_name: bambu-studio-api
+    networks:
+      bond0:
+        ipv4_address: 192.168.1.57
+    volumes:
+      - /mnt/user/appdata/bambuddy/slicer/bambu:/app/data
+    environment:
+      <<: *host-env
+      NODE_ENV: production
+      PORT: "3001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      start_period: 10s
+      retries: 3
+    restart: unless-stopped
+
+networks:
+  bond0:
+    external: true
+  app_bridge:
+    name: app_bridge
+    external: true
+

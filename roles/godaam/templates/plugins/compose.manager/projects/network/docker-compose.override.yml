@@ -5,6 +5,12 @@ x-common:
     net.unraid.docker.shell: '/bin/bash'
 
 services:
+  pocket-id:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/pocket-id/pocket-id/refs/heads/main/frontend/static/img/static-logo-512.png'
+      net.unraid.docker.webui: 'https://auth.app.apandey.com'
+
   transmission-openvpn:
     labels:
       <<: *common-labels

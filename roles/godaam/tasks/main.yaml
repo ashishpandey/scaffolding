@@ -142,12 +142,6 @@
     - traefik
     - app
 
-# - name: Homepage app
-#   ansible.builtin.import_tasks: compose_patch.yaml
-#   tags:
-#     - compose
-#     - compose.patch
-
 # - name: deploy common compose file
 #   copy:
 #     src: docker-compose-common.yml
@@ -168,8 +162,14 @@
   with_filetree: ../templates/plugins/compose.manager/projects/
   loop_control:
     label: "{{ item.path }}"
-  when: item.state == 'directory'
+  when:
+    - item.state == 'directory'
+    - (ansible_run_tags | default(['all']) | length == 0) or
+      ('all' in ansible_run_tags) or
+      ('compose' in ansible_run_tags) or
+      ((item.path.split('/') | first) in (ansible_run_tags | map('regex_replace', '^compose-', '') | list))
   tags:
+    - always
     - compose
 
 - name: Deploy compose files
@@ -180,8 +180,14 @@
   with_filetree: ../templates/plugins/compose.manager/projects/
   loop_control:
     label: "{{ item.path }}"
-  when: item.state == 'file'
+  when:
+    - item.state == 'file'
+    - (ansible_run_tags | default(['all']) | length == 0) or
+      ('all' in ansible_run_tags) or
+      ('compose' in ansible_run_tags) or
+      ((item.path.split('/') | first) in (ansible_run_tags | map('regex_replace', '^compose-', '') | list))
   tags:
+    - always
     - compose
 
 - name: Deploy esphome secrets

@@ -5,6 +5,23 @@ x-host-env: &host-env
   TZ: Asia/Hong_Kong
   
 services:
+  pocket-id:
+    container_name: auth
+    image: pocketid/pocket-id:latest
+    networks:
+      - app_bridge
+    restart: unless-stopped
+    expose:
+      - 1411
+    environment:
+      <<: *host-env
+      APP_URL: https://auth.app.apandey.com
+      ENCRYPTION_KEY: ${POCKET_ID_ENCRYPTION_KEY}
+    volumes:
+      - "/mnt/user/appdata/pocketid:/app/data"
+    labels:
+      traefik.enable: true
+
   transmission-openvpn:
     container_name: Transmission_VPN
     networks:

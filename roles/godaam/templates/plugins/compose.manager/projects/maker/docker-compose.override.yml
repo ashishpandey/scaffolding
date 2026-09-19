@@ -1,0 +1,17 @@
+x-common:
+  labels: &common-labels
+    folder.view2: Maker Lab
+    net.unraid.docker.managed: 'composeman'
+    net.unraid.docker.shell: '/bin/bash'
+
+services:
+  bambuddy:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: 'https://raw.githubusercontent.com/maziggy/bambuddy/refs/heads/main/static/img/android-chrome-192x192.png'
+      net.unraid.docker.webui: 'https://bambuddy.app.apandey.com'
+
+  bambu-studio-api:
+    labels:
+      <<: *common-labels
+      net.unraid.docker.icon: 'https://user-images.githubusercontent.com/106916061/179006347-497d24c0-9bd6-45b7-8c49-d5cc8ecfe5d7.png'

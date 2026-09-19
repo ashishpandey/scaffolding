@@ -1,4 +1,6 @@
-homeassistant: true
+homeassistant: 
+  enabled: true
+  experimental_event_entities: true
 frontend:
   port: 9442
 mqtt:
